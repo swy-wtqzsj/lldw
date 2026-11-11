@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.KnowledgeMapper">
+
+    <resultMap id="KnowledgeResultMap" type="com.salmon.pet.entity.Knowledge">
+        <id property="articleId" column="know_id"/>
+        <result property="categoryId" column="cat_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="coverImage" column="cover"/>
+        <result property="status" column="status"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="publishTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="categoryName" column="cat_name"/>
+    </resultMap>
+
+    <resultMap id="CategoryResultMap" type="com.salmon.pet.entity.KnowledgeCategory">
+        <id property="categoryId" column="cat_id"/>
+        <result property="categoryName" column="cat_name"/>
+        <result property="icon" column="icon"/>
+        <result property="sortOrder" column="sort_order"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <!-- 查询所有分类 -->
+    <select id="selectAllCategory" resultMap="CategoryResultMap">
+        SELECT * FROM knowledge_category WHERE status = 1 ORDER BY sort_order
+    </select>
+
+    <!-- 查询已发布的知识列表 -->
+    <select id="selectPublicList" resultMap="KnowledgeResultMap">
+        SELECT k.*, c.cat_name
+        FROM knowledge k
+        LEFT JOIN knowledge_category c ON k.cat_id = c.cat_id
+        WHERE k.status = 2
+        <if test="categoryId != null">
+            AND k.cat_id = #{categoryId}
+        </if>
+        ORDER BY k.create_time DESC
+    </select>
+
+    <!-- 查询知识详情 -->
+    <select id="selectById" resultMap="KnowledgeResultMap">
+        SELECT k.*, c.cat_name
+        FROM knowledge k
+        LEFT JOIN knowledge_category c ON k.cat_id = c.cat_id
+        WHERE k.know_id = #{articleId}
+    </select>
+
+    <!-- 增加浏览次数 -->
+    <update id="increaseViewCount">
+        UPDATE knowledge SET view_count = view_count + 1 WHERE know_id = #{articleId}
+    </update>
+
+    <!-- 后台查询所有知识 -->
+    <select id="selectAdminList" resultMap="KnowledgeResultMap">
+        SELECT k.*, c.cat_name
+        FROM knowledge k
+        LEFT JOIN knowledge_category c ON k.cat_id = c.cat_id
+        <where>
+            <if test="categoryId != null">
+                AND k.cat_id = #{categoryId}
+            </if>
+        </where>
+        ORDER BY k.create_time DESC
+    </select>
+
+    <!-- 新增知识 -->
+    <insert id="insertKnowledge" parameterType="com.salmon.pet.entity.Knowledge" useGeneratedKeys="true" keyProperty="articleId">
+        INSERT INTO knowledge (cat_id, title, content, cover, status, view_count, create_time, update_time)
+        VALUES (#{categoryId}, #{title}, #{content}, #{coverImage}, #{status}, 0, NOW(), NOW())
+    </insert>
+
+    <!-- 更新知识 -->
+    <update id="updateKnowledge" parameterType="com.salmon.pet.entity.Knowledge">
+        UPDATE knowledge SET
+            cat_id = #{categoryId},
+            title = #{title},
+            content = #{content},
+            cover = #{coverImage},
+            status = #{status},
+            update_time = NOW()
+        WHERE know_id = #{articleId}
+    </update>
+
+</mapper>
