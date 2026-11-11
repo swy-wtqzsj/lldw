@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.HelpRequestMapper">
+
+    <resultMap id="HelpRequestResultMap" type="com.salmon.pet.entity.HelpRequest">
+        <id property="helpId" column="help_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="type" column="type"/>
+        <result property="content" column="content"/>
+        <result property="location" column="location"/>
+        <result property="contact" column="contact"/>
+        <result property="photo" column="photo"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="auditStatus" column="audit_status"/>
+        <result property="handleStatus" column="handle_status"/>
+        <result property="auditOpinion" column="audit_opinion"/>
+        <result property="username" column="username"/>
+    </resultMap>
+
+    <!-- 用户发布求助 -->
+    <insert id="insertHelpRequest" parameterType="com.salmon.pet.entity.HelpRequest" useGeneratedKeys="true" keyProperty="helpId">
+        INSERT INTO help_request (
+            user_id, title, type, content, location, contact, photo,
+            publish_time, audit_status, handle_status
+        ) VALUES (
+            #{userId}, #{title}, #{type}, #{content}, #{location}, #{contact}, #{photo},
+            NOW(), 1, 1
+        )
+    </insert>
+
+    <!-- 查询已审核通过的求助列表 -->
+    <select id="selectPublicList" resultMap="HelpRequestResultMap">
+        SELECT h.*, u.username
+        FROM help_request h
+        LEFT JOIN user u ON h.user_id = u.user_id
+        WHERE h.audit_status = 2
+        <if test="type != null">
+            AND h.type = #{type}
+        </if>
+        <if test="handleStatus != null">
+            AND h.handle_status = #{handleStatus}
+        </if>
+        ORDER BY h.publish_time DESC
+    </select>
+
+    <!-- 查询求助详情 -->
+    <select id="selectById" resultMap="HelpRequestResultMap">
+        SELECT h.*, u.username
+        FROM help_request h
+        LEFT JOIN user u ON h.user_id = u.user_id
+        WHERE h.help_id = #{helpId}
+    </select>
+
+    <!-- 查询用户自己的求助列表 -->
+    <select id="selectMyList" resultMap="HelpRequestResultMap">
+        SELECT * FROM help_request
+        WHERE user_id = #{userId}
+        ORDER BY publish_time DESC
+    </select>
+
+    <!-- 后台查询所有求助列表 -->
+    <select id="selectAdminList" resultMap="HelpRequestResultMap">
+        SELECT h.*, u.username
+        FROM help_request h
+        LEFT JOIN user u ON h.user_id = u.user_id
+        <where>
+            <if test="auditStatus != null">
+                AND h.audit_status = #{auditStatus}
+            </if>
+        </where>
+        ORDER BY h.publish_time DESC
+    </select>
+
+    <!-- 审核求助 -->
+    <update id="auditHelpRequest">
+        UPDATE help_request
+        SET audit_status = #{auditStatus},
+            audit_opinion = #{auditOpinion}
+        WHERE help_id = #{helpId}
+    </update>
+
+    <!-- 更新处理状态 -->
+    <update id="updateHandleStatus">
+        UPDATE help_request SET handle_status = #{handleStatus} WHERE help_id = #{helpId}
+    </update>
+
+</mapper>

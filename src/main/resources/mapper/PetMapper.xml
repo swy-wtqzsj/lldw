@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.PetMapper">
+
+    <resultMap id="PetResultMap" type="com.salmon.pet.entity.Pet">
+        <id property="petId" column="pet_id"/>
+        <result property="petNo" column="pet_no"/>
+        <result property="petName" column="pet_name"/>
+        <result property="species" column="species"/>
+        <result property="breed" column="breed"/>
+        <result property="gender" column="gender"/>
+        <result property="ageStage" column="age_stage"/>
+        <result property="birthday" column="birthday"/>
+        <result property="photo" column="photo"/>
+        <result property="photos" column="photos"/>
+        <result property="description" column="description"/>
+        <result property="adoptStatus" column="adopt_status"/>
+        <result property="isNeutered" column="is_neutered"/>
+        <result property="isVaccinated" column="is_vaccinated"/>
+        <result property="healthStatus" column="health_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 前台宠物列表查询（只显示待领养的） -->
+    <select id="selectPetList" resultMap="PetResultMap">
+        SELECT * FROM pet
+        WHERE adopt_status = 2
+        <if test="species != null">
+            AND species = #{species}
+        </if>
+        <if test="breed != null and breed != ''">
+            AND breed LIKE CONCAT('%', #{breed}, '%')
+        </if>
+        <if test="gender != null">
+            AND gender = #{gender}
+        </if>
+        <if test="ageStage != null">
+            AND age_stage = #{ageStage}
+        </if>
+        <if test="isNeutered != null">
+            AND is_neutered = #{isNeutered}
+        </if>
+        <if test="isVaccinated != null">
+            AND is_vaccinated = #{isVaccinated}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据ID查询宠物 -->
+    <select id="selectPetById" resultMap="PetResultMap">
+        SELECT * FROM pet WHERE pet_id = #{petId}
+    </select>
+
+    <!-- 新增宠物 -->
+    <insert id="insertPet" parameterType="com.salmon.pet.entity.Pet" useGeneratedKeys="true" keyProperty="petId">
+        INSERT INTO pet (
+            pet_no, pet_name, species, breed, gender, age_stage, birthday,
+            photo, photos, description, adopt_status, is_neutered, is_vaccinated,
+            health_status, create_time, update_time
+        ) VALUES (
+            #{petNo}, #{petName}, #{species}, #{breed}, #{gender}, #{ageStage}, #{birthday},
+            #{photo}, #{photos}, #{description}, #{adoptStatus}, #{isNeutered}, #{isVaccinated},
+            #{healthStatus}, NOW(), NOW()
+        )
+    </insert>
+
+    <!-- 更新宠物 -->
+    <update id="updatePet" parameterType="com.salmon.pet.entity.Pet">
+        UPDATE pet
+        <set>
+            <if test="petName != null">pet_name = #{petName},</if>
+            <if test="species != null">species = #{species},</if>
+            <if test="breed != null">breed = #{breed},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="ageStage != null">age_stage = #{ageStage},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="photo != null">photo = #{photo},</if>
+            <if test="photos != null">photos = #{photos},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="adoptStatus != null">adopt_status = #{adoptStatus},</if>
+            <if test="isNeutered != null">is_neutered = #{isNeutered},</if>
+            <if test="isVaccinated != null">is_vaccinated = #{isVaccinated},</if>
+            <if test="healthStatus != null">health_status = #{healthStatus},</if>
+            update_time = NOW()
+        </set>
+        WHERE pet_id = #{petId}
+    </update>
+
+    <!-- 更新宠物状态 -->
+    <update id="updateStatus">
+        UPDATE pet SET adopt_status = #{status}, update_time = NOW() WHERE pet_id = #{petId}
+    </update>
+
+    <!-- 后台查询所有宠物 -->
+    <select id="selectAllPetList" resultMap="PetResultMap">
+        SELECT * FROM pet ORDER BY create_time DESC
+    </select>
+
+    <!-- 删除宠物（逻辑删除：改为已归档） -->
+    <update id="deletePet">
+        UPDATE pet SET adopt_status = 7, update_time = NOW() WHERE pet_id = #{petId}
+    </update>
+
+</mapper>

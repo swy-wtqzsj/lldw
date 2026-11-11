@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.CommentMapper">
+
+    <resultMap id="CommentResultMap" type="com.salmon.pet.entity.Comment">
+        <id property="commentId" column="comment_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="targetType" column="target_type"/>
+        <result property="targetId" column="target_id"/>
+        <result property="content" column="content"/>
+        <result property="commentTime" column="comment_time"/>
+        <result property="status" column="status"/>
+        <result property="username" column="username"/>
+        <result property="avatar" column="avatar"/>
+    </resultMap>
+
+    <!-- 发表评论 -->
+    <insert id="insertComment" parameterType="com.salmon.pet.entity.Comment" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO comment (user_id, target_type, target_id, content, comment_time, status)
+        VALUES (#{userId}, #{targetType}, #{targetId}, #{content}, NOW(), 1)
+    </insert>
+
+    <!-- 查询某对象的评论列表 -->
+    <select id="selectListByTarget" resultMap="CommentResultMap">
+        SELECT c.*, u.username, u.avatar
+        FROM comment c
+        LEFT JOIN user u ON c.user_id = u.user_id
+        WHERE c.target_type = #{targetType} AND c.target_id = #{targetId} AND c.status = 1
+        ORDER BY c.comment_time DESC
+    </select>
+
+    <!-- 后台查询所有评论 -->
+    <select id="selectAllList" resultMap="CommentResultMap">
+        SELECT c.*, u.username
+        FROM comment c
+        LEFT JOIN user u ON c.user_id = u.user_id
+        ORDER BY c.comment_time DESC
+    </select>
+
+    <!-- 删除评论 -->
+    <update id="deleteComment">
+        UPDATE comment SET status = 0 WHERE comment_id = #{commentId}
+    </update>
+
+    <!-- 隐藏/显示评论 -->
+    <update id="updateStatus">
+        UPDATE comment SET status = #{status} WHERE comment_id = #{commentId}
+    </update>
+
+</mapper>

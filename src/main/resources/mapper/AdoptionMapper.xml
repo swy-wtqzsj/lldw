@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.AdoptionMapper">
+
+    <resultMap id="AdoptionResultMap" type="com.salmon.pet.entity.Adoption">
+        <id property="adoptId" column="adopt_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="petId" column="pet_id"/>
+        <result property="adopterName" column="adopter_name"/>
+        <result property="phone" column="phone"/>
+        <result property="economicStatus" column="economic_status"/>
+        <result property="reason" column="reason"/>
+        <result property="status" column="status"/>
+        <result property="applyTime" column="apply_time"/>
+        <result property="auditOpinion" column="audit_opinion"/>
+        <result property="auditAdminId" column="audit_admin_id"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="username" column="username"/>
+        <result property="petName" column="pet_name"/>
+        <result property="petPhoto" column="pet_photo"/>
+        <result property="petSpecies" column="pet_species"/>
+        <result property="petBreed" column="pet_breed"/>
+    </resultMap>
+
+    <!-- 用户提交领养申请 -->
+    <insert id="insertAdoption" parameterType="com.salmon.pet.entity.Adoption" useGeneratedKeys="true" keyProperty="adoptId">
+        INSERT INTO adoption (
+            user_id, pet_id, adopter_name, phone, economic_status, reason, status, apply_time
+        ) VALUES (
+            #{userId}, #{petId}, #{adopterName}, #{phone}, #{economicStatus}, #{reason}, 1, NOW()
+        )
+    </insert>
+
+    <!-- 查询用户的领养申请列表（联表查宠物信息） -->
+    <select id="selectMyAdoptionList" resultMap="AdoptionResultMap">
+        SELECT a.*, p.pet_name, p.photo as pet_photo, p.species as pet_species, p.breed as pet_breed
+        FROM adoption a
+        LEFT JOIN pet p ON a.pet_id = p.pet_id
+        WHERE a.user_id = #{userId}
+        ORDER BY a.apply_time DESC
+    </select>
+
+    <!-- 根据ID查询领养申请 -->
+    <select id="selectAdoptionById" resultMap="AdoptionResultMap">
+        SELECT a.*, u.username, p.pet_name, p.photo as pet_photo, p.species as pet_species, p.breed as pet_breed
+        FROM adoption a
+        LEFT JOIN user u ON a.user_id = u.user_id
+        LEFT JOIN pet p ON a.pet_id = p.pet_id
+        WHERE a.adopt_id = #{adoptId}
+    </select>
+
+    <!-- 后台查询领养申请列表 -->
+    <select id="selectAdminAdoptionList" resultMap="AdoptionResultMap">
+        SELECT a.*, u.username, p.pet_name, p.photo as pet_photo, p.species as pet_species, p.breed as pet_breed
+        FROM adoption a
+        LEFT JOIN user u ON a.user_id = u.user_id
+        LEFT JOIN pet p ON a.pet_id = p.pet_id
+        <where>
+            <if test="status != null">
+                AND a.status = #{status}
+            </if>
+        </where>
+        ORDER BY a.apply_time DESC
+    </select>
+
+    <!-- 审核领养申请 -->
+    <update id="auditAdoption">
+        UPDATE adoption
+        SET status = #{status},
+            audit_opinion = #{auditOpinion},
+            audit_admin_id = #{auditAdminId},
+            audit_time = NOW()
+        WHERE adopt_id = #{adoptId}
+    </update>
+
+    <!-- 查询用户某只宠物的申请（防止重复申请） -->
+    <select id="selectUserPetApply" resultMap="AdoptionResultMap">
+        SELECT * FROM adoption
+        WHERE user_id = #{userId} AND pet_id = #{petId} AND status = 1
+        LIMIT 1
+    </select>
+
+</mapper>
