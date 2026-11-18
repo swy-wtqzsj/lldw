@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420">
+    <rect width="640" height="420" fill="#F7EFE3"/>
+    <circle cx="320" cy="200" r="96" fill="#FFFDF9" stroke="#E8DFD3" stroke-width="2"/>
+    <g fill="#87A99F">
+        <ellipse cx="290" cy="176" rx="16" ry="22" transform="rotate(-18 290 176)"/>
+        <ellipse cx="306" cy="158" rx="15" ry="21" transform="rotate(-8 306 158)"/>
+        <ellipse cx="330" cy="158" rx="15" ry="21" transform="rotate(8 330 158)"/>
+        <ellipse cx="348" cy="176" rx="16" ry="22" transform="rotate(18 348 176)"/>
+        <path d="M320 190c-20 0-38 16-38 36 0 20 14 32 30 36 5 1 10 1 16 0 16-4 30-16 30-36 0-20-18-36-38-36z"/>
+    </g>
+    <path d="M320 300c-8-10-26-24-26-38 0-9 7-16 16-16 4 0 8 2 10 5 2-3 6-5 10-5 9 0 16 7 16 16 0 14-18 28-26 38z" fill="#E7B49A"/>
+    <text x="320" y="356" text-anchor="middle" font-family="'Microsoft YaHei',sans-serif" font-size="22" fill="#547B73">等待一个温暖的家</text>
+</svg>

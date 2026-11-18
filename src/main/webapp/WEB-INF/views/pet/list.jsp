@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -6,26 +6,31 @@
     <meta charset="UTF-8">
     <title>领养中心 - 流浪猫狗救助系统</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/">流浪猫狗救助系统</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/">流浪猫狗救助系统</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/">首页</a></li>
-                <li class="nav-item"><a class="nav-link active" href="/pet-adoption/pet/list">领养中心</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/">首页</a></li>
+                <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/pet/list">领养中心</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/help/list">求助中心</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/activity/list">志愿活动</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/knowledge/list">知识科普</a></li>
             </ul>
             <ul class="navbar-nav">
                 <c:choose>
                     <c:when test="${not empty sessionScope.loginUser}">
-                        <li class="nav-item"><a class="nav-link" href="/pet-adoption/pet/my">我的领养</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/pet-adoption/user/profile">个人中心</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/pet-adoption/user/logout">退出</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/pet/my">我的领养</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/pet/my_return">我的退养</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/profile">个人中心</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/logout">退出</a></li>
                     </c:when>
                     <c:otherwise>
-                        <li class="nav-item"><a class="nav-link" href="/pet-adoption/login">登录</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/pet-adoption/register">注册</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/login">登录</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/register">注册</a></li>
                     </c:otherwise>
                 </c:choose>
             </ul>
@@ -39,7 +44,7 @@
     <!-- 筛选栏 -->
     <div class="card mb-4">
         <div class="card-body">
-            <form method="get" action="/pet-adoption/pet/list" class="row g-3">
+            <form method="get" action="${pageContext.request.contextPath}/pet/list" class="row g-3">
                 <div class="col-md-2">
                     <select name="species" class="form-select">
                         <option value="">种类</option>
@@ -66,8 +71,22 @@
                     </select>
                 </div>
                 <div class="col-md-2">
+                    <select name="isNeutered" class="form-select">
+                        <option value="">绝育情况</option>
+                        <option value="1" ${isNeutered == 1 ? 'selected' : ''}>已绝育</option>
+                        <option value="0" ${isNeutered == 0 ? 'selected' : ''}>未绝育</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="isVaccinated" class="form-select">
+                        <option value="">疫苗情况</option>
+                        <option value="1" ${isVaccinated == 1 ? 'selected' : ''}>已疫苗</option>
+                        <option value="0" ${isVaccinated == 0 ? 'selected' : ''}>未疫苗</option>
+                    </select>
+                </div>
+                <div class="col-12">
                     <button type="submit" class="btn btn-primary">筛选</button>
-                    <a href="/pet-adoption/pet/list" class="btn btn-outline-secondary">重置</a>
+                    <a href="${pageContext.request.contextPath}/pet/list" class="btn btn-outline-secondary">重置</a>
                 </div>
             </form>
         </div>
@@ -78,14 +97,14 @@
         <c:forEach var="pet" items="${petList}">
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <img src="${empty pet.photo ? '/pet-adoption/static/img/default.jpg' : pet.photo}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="${pet.petName}">
+                    <img src="${pageContext.request.contextPath}${empty pet.photo ? '/static/img/default.svg' : pet.photo}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="${pet.petName}" onerror="this.onerror=null;this.src='${pageContext.request.contextPath}/static/img/default.svg'">
                     <div class="card-body">
                         <h5 class="card-title">${pet.petName}</h5>
                         <p class="card-text">
                             ${pet.speciesText} | ${pet.breed} | ${pet.genderText} | ${pet.ageStageText}<br>
                             <small class="text-muted">${pet.neuteredText} | ${pet.vaccinatedText}</small>
                         </p>
-                        <a href="/pet-adoption/pet/detail/${pet.petId}" class="btn btn-primary btn-sm">查看详情</a>
+                        <a href="${pageContext.request.contextPath}/pet/detail/${pet.petId}" class="btn btn-primary btn-sm">查看详情</a>
                     </div>
                 </div>
             </div>
@@ -98,19 +117,20 @@
     </div>
 
     <!-- 分页 -->
+    <c:set var="filterQuery" value="&species=${species}&breed=${breed}&gender=${gender}&ageStage=${ageStage}&isNeutered=${isNeutered}&isVaccinated=${isVaccinated}"/>
     <c:if test="${pageInfo.pages > 1}">
         <nav aria-label="分页">
             <ul class="pagination justify-content-center">
                 <li class="page-item ${pageInfo.pageNum <= 1 ? 'disabled' : ''}">
-                    <a class="page-link" href="?pageNum=${pageInfo.pageNum - 1}">上一页</a>
+                    <a class="page-link" href="?pageNum=${pageInfo.pageNum - 1}${filterQuery}">上一页</a>
                 </li>
                 <c:forEach begin="1" end="${pageInfo.pages}" var="i">
                     <li class="page-item ${pageInfo.pageNum == i ? 'active' : ''}">
-                        <a class="page-link" href="?pageNum=${i}">${i}</a>
+                        <a class="page-link" href="?pageNum=${i}${filterQuery}">${i}</a>
                     </li>
                 </c:forEach>
                 <li class="page-item ${pageInfo.pageNum >= pageInfo.pages ? 'disabled' : ''}">
-                    <a class="page-link" href="?pageNum=${pageInfo.pageNum + 1}">下一页</a>
+                    <a class="page-link" href="?pageNum=${pageInfo.pageNum + 1}${filterQuery}">下一页</a>
                 </li>
             </ul>
         </nav>

@@ -1,22 +1,38 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>志愿活动 - 流浪猫狗救助系统</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/">流浪猫狗救助系统</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/">流浪猫狗救助系统</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/pet/list">领养中心</a></li>
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/help/list">求助中心</a></li>
-                <li class="nav-item"><a class="nav-link active" href="/pet-adoption/activity/list">志愿活动</a></li>
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/knowledge/list">知识科普</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/">首页</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/pet/list">领养中心</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/help/list">求助中心</a></li>
+                <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/activity/list">志愿活动</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/knowledge/list">知识科普</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.loginUser}">
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/activity/my">我的活动</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/profile">个人中心</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/logout">退出</a></li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/login">登录</a></li>
+                        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/register">注册</a></li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
         </div>
     </div>
@@ -32,11 +48,11 @@
                     <div class="card-body">
                         <h5 class="card-title">${item.title}</h5>
                         <p class="card-text text-muted">
-                            <small>时间：${item.startTime}</small><br>
+                            <small>时间：<fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm"/></small><br>
                             <small>地点：${item.location}</small><br>
-                            <small>已报名：${item.signupCount}/${item.maxPeople}人</small>
+                            <small>已报名：${item.signupCount}/${item.maxPeople == 0 ? '不限' : item.maxPeople}人</small>
                         </p>
-                        <a href="/pet-adoption/activity/detail/${item.activityId}" class="btn btn-sm btn-primary">查看详情</a>
+                        <a href="${pageContext.request.contextPath}/activity/detail/${item.activityId}" class="btn btn-sm btn-primary">查看详情</a>
                     </div>
                 </div>
             </div>

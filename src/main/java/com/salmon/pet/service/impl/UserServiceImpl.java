@@ -95,4 +95,17 @@ public class UserServiceImpl implements UserService {
         userMapper.updatePassword(userId, MD5Utils.md5(newPassword));
         return null;
     }
+
+    @Override
+    public java.util.List<User> getAdminList(String keyword) {
+        return userMapper.selectAdminList(keyword);
+    }
+
+    @Override
+    public boolean updateStatus(Integer userId, Integer status) {
+        if (userId == null || status == null || (status != 0 && status != 1)) {
+            return false;
+        }
+        return userMapper.updateStatus(userId, status) > 0;
+    }
 }

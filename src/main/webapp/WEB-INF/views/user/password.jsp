@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>修改密码 - 流浪猫狗救助系统</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <div class="container" style="margin-top:50px;">

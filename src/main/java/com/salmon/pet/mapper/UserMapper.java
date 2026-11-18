@@ -22,4 +22,13 @@ public interface UserMapper {
 
     /** 更新密码 */
     int updatePassword(@Param("userId") Integer userId, @Param("password") String password);
+
+    /** 后台用户列表（按用户名/昵称/手机号搜索） */
+    java.util.List<User> selectAdminList(@Param("keyword") String keyword);
+
+    /** 更新用户状态（启用/禁用） */
+    int updateStatus(@Param("userId") Integer userId, @Param("status") Integer status);
+
+    /** 更新用户角色 */
+    int updateRole(@Param("userId") Integer userId, @Param("role") Integer role);
 }

@@ -1,0 +1,411 @@
+/* 温暖治愈主题：鼠尾草绿 + 奶油底色 + 柔和圆角 */
+:root {
+    --warm-bg: #FBF6EE;
+    --warm-surface: #FFFDF9;
+    --warm-surface-soft: #F7EFE3;
+    --warm-primary: #547B73;
+    --warm-primary-dark: #43645D;
+    --warm-primary-light: #87A99F;
+    --warm-sand: #EFE3D3;
+    --warm-peach: #E7B49A;
+    --warm-terracotta: #C97B5A;
+    --warm-text: #2B332F;
+    --warm-muted: #75827C;
+    --warm-border: #E8DFD3;
+    --warm-shadow: 0 10px 30px rgba(84, 123, 115, .10);
+    --warm-gradient: linear-gradient(135deg, #547B73, #87A99F);
+}
+
+body {
+    background: radial-gradient(circle at 15% 0%, #FFFDF9 0%, #FBF6EE 55%, #F5EDE1 100%) !important;
+    color: var(--warm-text);
+    font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--warm-primary);
+}
+
+a:hover,
+a:focus {
+    color: var(--warm-primary-dark);
+}
+
+/* ========== 导航 ========== */
+.navbar.bg-dark {
+    background: var(--warm-gradient) !important;
+    border-bottom: 0;
+}
+
+.navbar-dark .navbar-brand,
+.navbar-dark .nav-link {
+    color: #fff !important;
+}
+
+.navbar-dark .nav-link:hover,
+.navbar-dark .nav-link.active {
+    color: #FFF1E6 !important;
+}
+
+.navbar-inverse {
+    background: var(--warm-gradient) !important;
+    border: 0;
+}
+
+.navbar-inverse .navbar-brand,
+.navbar-inverse .navbar-nav > li > a {
+    color: #fff !important;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover {
+    background: rgba(255, 255, 255, .12);
+    color: #FFF1E6 !important;
+}
+
+.navbar-default {
+    background: rgba(255, 253, 249, .94) !important;
+    border-bottom: 1px solid var(--warm-border);
+    box-shadow: 0 4px 18px rgba(84, 123, 115, .06);
+}
+
+.navbar-default .navbar-brand {
+    color: var(--warm-primary) !important;
+    font-weight: 600;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: var(--warm-text) !important;
+}
+
+/* ========== 按钮 ========== */
+.btn-primary {
+    background-color: var(--warm-primary);
+    border-color: var(--warm-primary);
+    color: #fff;
+    border-radius: 10px;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--warm-primary-dark) !important;
+    border-color: var(--warm-primary-dark) !important;
+    color: #fff !important;
+}
+
+.btn-outline-primary {
+    color: var(--warm-primary);
+    border-color: var(--warm-primary);
+    border-radius: 10px;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--warm-primary);
+    border-color: var(--warm-primary);
+    color: #fff;
+}
+
+.btn-success {
+    background-color: #6F948B;
+    border-color: #6F948B;
+    border-radius: 10px;
+}
+
+.btn-success:hover {
+    background-color: #5F837A !important;
+    border-color: #5F837A !important;
+}
+
+.btn-danger {
+    background-color: var(--warm-terracotta);
+    border-color: var(--warm-terracotta);
+    border-radius: 10px;
+}
+
+.btn-danger:hover {
+    background-color: #B76A4B !important;
+    border-color: #B76A4B !important;
+}
+
+.btn-outline-danger {
+    color: var(--warm-terracotta);
+    border-color: var(--warm-terracotta);
+    border-radius: 10px;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--warm-terracotta);
+    border-color: var(--warm-terracotta);
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    color: var(--warm-muted);
+    border-color: #D8CDBE;
+    border-radius: 10px;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--warm-sand);
+    border-color: #D8CDBE;
+    color: var(--warm-text);
+}
+
+.btn-default {
+    background: var(--warm-surface);
+    border-color: var(--warm-border);
+    color: var(--warm-text);
+    border-radius: 10px;
+}
+
+.btn-default:hover {
+    background: var(--warm-sand);
+    border-color: var(--warm-border);
+}
+
+/* ========== 卡片 / 面板 ========== */
+.card {
+    background: var(--warm-surface);
+    border: 1px solid var(--warm-border);
+    border-radius: 16px;
+    box-shadow: var(--warm-shadow);
+    overflow: hidden;
+}
+
+.panel {
+    border-color: var(--warm-border);
+    border-radius: 14px;
+    box-shadow: var(--warm-shadow);
+}
+
+.panel-primary {
+    border-color: var(--warm-primary);
+}
+
+.panel-primary > .panel-heading {
+    background: var(--warm-gradient);
+    border-color: var(--warm-primary);
+    color: #fff;
+}
+
+.panel-default > .panel-heading {
+    background: var(--warm-surface-soft);
+    color: var(--warm-text);
+    border-color: var(--warm-border);
+}
+
+.jumbotron {
+    background: linear-gradient(160deg, #FFFDF9 0%, #F3E6D6 100%);
+    border: 1px solid var(--warm-border);
+    border-radius: 24px;
+    box-shadow: var(--warm-shadow);
+}
+
+.jumbotron h1 {
+    color: var(--warm-primary-dark);
+    font-weight: 700;
+}
+
+/* ========== 表格 ========== */
+.table {
+    --bs-table-border-color: var(--warm-border);
+    --bs-table-striped-bg: #FAF4EA;
+    --bs-table-hover-bg: #F4EBDE;
+    color: var(--warm-text);
+}
+
+.table > :not(caption) > * > * {
+    border-color: var(--warm-border);
+}
+
+.table thead th {
+    background: var(--warm-surface-soft);
+    color: #4A554F;
+    font-weight: 600;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #FAF4EA;
+}
+
+/* ========== 徽章 ========== */
+.badge {
+    font-weight: 500;
+}
+
+.bg-primary {
+    background-color: var(--warm-primary) !important;
+}
+
+.bg-success {
+    background-color: #6F948B !important;
+}
+
+.bg-info {
+    background-color: #7EA6A0 !important;
+}
+
+.bg-secondary {
+    background-color: #9AA7A1 !important;
+}
+
+.bg-warning {
+    background-color: #E2B15F !important;
+    color: #4A3A22 !important;
+}
+
+.bg-danger {
+    background-color: var(--warm-terracotta) !important;
+}
+
+/* ========== 表单 ========== */
+.form-control,
+.form-select {
+    background-color: #FFFEFA;
+    border-color: var(--warm-border);
+    border-radius: 10px;
+    color: var(--warm-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--warm-primary-light);
+    box-shadow: 0 0 0 .2rem rgba(84, 123, 115, .15);
+}
+
+/* ========== 分页 ========== */
+.page-link {
+    color: var(--warm-primary);
+    background: var(--warm-surface);
+    border-color: var(--warm-border);
+}
+
+.page-link:hover {
+    color: var(--warm-primary-dark);
+    background: var(--warm-sand);
+}
+
+.page-item.active .page-link {
+    background: var(--warm-primary);
+    border-color: var(--warm-primary);
+}
+
+.page-item.disabled .page-link {
+    color: #B9C2BD;
+    background: var(--warm-bg);
+}
+
+/* ========== 弹窗 / 列表 ========== */
+.modal-content {
+    background: var(--warm-surface);
+    border: 1px solid var(--warm-border);
+    border-radius: 16px;
+    box-shadow: var(--warm-shadow);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--warm-border);
+}
+
+.list-group-item {
+    border-color: var(--warm-border);
+    color: var(--warm-text);
+}
+
+.list-group-item.active {
+    background: var(--warm-primary);
+    border-color: var(--warm-primary);
+}
+
+.alert-danger {
+    color: #9C4A2F;
+    background: #FBEAE2;
+    border-color: #EFCDBC;
+}
+
+/* ========== 登录 / 注册 ========== */
+.login-box,
+.register-box {
+    background: var(--warm-surface) !important;
+    border: 1px solid var(--warm-border);
+    border-radius: 18px !important;
+    box-shadow: 0 18px 50px rgba(84, 123, 115, .14) !important;
+}
+
+.login-box h2,
+.register-box h2 {
+    color: var(--warm-primary-dark);
+    font-weight: 600;
+}
+
+/* ========== 后台看板 ========== */
+.sidebar {
+    background: linear-gradient(180deg, #547B73 0%, #3F5F58 100%) !important;
+}
+
+.sidebar .brand {
+    border-bottom-color: rgba(255, 255, 255, .18) !important;
+}
+
+.sidebar .nav-item.active {
+    background: rgba(255, 255, 255, .16);
+    border-left-color: var(--warm-peach) !important;
+}
+
+.topbar,
+.stat-card {
+    background: var(--warm-surface) !important;
+    border: 1px solid var(--warm-border);
+    box-shadow: var(--warm-shadow);
+}
+
+.stat-card .info h3 {
+    color: var(--warm-primary-dark);
+}
+
+.stat-card .info p {
+    color: var(--warm-muted);
+}
+
+.bg-warm1 {
+    background: var(--warm-terracotta) !important;
+}
+
+.bg-warm2 {
+    background: #E2B15F !important;
+}
+
+.bg-warm3 {
+    background: #D99B7C !important;
+}
+
+.bg-warm4 {
+    background: var(--warm-primary-light) !important;
+}
+
+/* ========== 补充通用色 ========== */
+.text-primary {
+    color: var(--warm-primary) !important;
+}
+
+.btn-link {
+    color: var(--warm-primary);
+}
+
+.nav-pills .nav-link.active {
+    background: var(--warm-primary);
+}
+
+.form-check-input:checked {
+    background-color: var(--warm-primary);
+    border-color: var(--warm-primary);
+}
+
+/* ========== 后台多菜单导航 ========== */
+.admin-nav .nav-link {
+    font-size: 14px;
+    padding-left: 10px;
+    padding-right: 10px;
+}

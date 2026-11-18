@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.VolunteerCertMapper">
+
+    <resultMap id="VolunteerCertResultMap" type="com.salmon.pet.entity.VolunteerCert">
+        <id property="certId" column="cert_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="realName" column="real_name"/>
+        <result property="idCard" column="id_card"/>
+        <result property="phone" column="phone"/>
+        <result property="emergencyContact" column="emergency_contact"/>
+        <result property="serviceArea" column="service_area"/>
+        <result property="skillTags" column="skill_tags"/>
+        <result property="status" column="status"/>
+        <result property="applyTime" column="apply_time"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="auditAdmin" column="audit_admin"/>
+        <result property="auditOpinion" column="audit_opinion"/>
+        <result property="username" column="username"/>
+        <result property="adminName" column="admin_name"/>
+    </resultMap>
+
+    <select id="selectList" resultMap="VolunteerCertResultMap">
+        SELECT v.*, u.username, a.username AS admin_name
+        FROM volunteer_cert v
+        LEFT JOIN user u ON v.user_id = u.user_id
+        LEFT JOIN user a ON v.audit_admin = a.user_id
+        <where>
+            <if test="status != null">
+                AND v.status = #{status}
+            </if>
+        </where>
+        ORDER BY v.cert_id DESC
+    </select>
+
+    <select id="selectById" resultMap="VolunteerCertResultMap">
+        SELECT * FROM volunteer_cert WHERE cert_id = #{certId}
+    </select>
+
+    <select id="selectByUserId" resultMap="VolunteerCertResultMap">
+        SELECT * FROM volunteer_cert WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.VolunteerCert"
+            useGeneratedKeys="true" keyProperty="certId">
+        INSERT INTO volunteer_cert (user_id, real_name, id_card, phone, emergency_contact,
+                                    service_area, skill_tags, status, apply_time)
+        VALUES (#{userId}, #{realName}, #{idCard}, #{phone}, #{emergencyContact},
+                #{serviceArea}, #{skillTags}, 1, NOW())
+    </insert>
+
+    <update id="updateApply" parameterType="com.salmon.pet.entity.VolunteerCert">
+        UPDATE volunteer_cert
+        SET real_name = #{realName},
+            id_card = #{idCard},
+            phone = #{phone},
+            emergency_contact = #{emergencyContact},
+            service_area = #{serviceArea},
+            skill_tags = #{skillTags},
+            status = 1,
+            apply_time = NOW(),
+            audit_admin = NULL,
+            audit_opinion = NULL
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="audit">
+        UPDATE volunteer_cert
+        SET status = #{status},
+            audit_admin = #{auditAdmin},
+            audit_opinion = #{auditOpinion}
+        WHERE cert_id = #{certId}
+    </update>
+
+    <select id="countPending" resultType="int">
+        SELECT COUNT(*) FROM volunteer_cert WHERE status = 1
+    </select>
+
+</mapper>

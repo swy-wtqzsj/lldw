@@ -19,6 +19,9 @@ public class ActivityController {
     @Autowired
     private ActivityService activityService;
 
+    @Autowired
+    private com.salmon.pet.service.CommentService commentService;
+
     @RequestMapping("/list")
     public String list(Model model) {
         List<Activity> list = activityService.getPublicList();
@@ -31,10 +34,10 @@ public class ActivityController {
         Activity activity = activityService.getById(activityId);
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser != null) {
-            Integer count = activityService.getMySignupList(loginUser.getUserId()).size();
-            // 简化：直接传 activityId，页面判断
+            model.addAttribute("userSignup", activityService.isSignedUp(activityId, loginUser.getUserId()));
         }
         model.addAttribute("activity", activity);
+        model.addAttribute("comments", commentService.getListByTarget(2, activityId));
         return "activity/detail";
     }
 
@@ -44,7 +47,10 @@ public class ActivityController {
         if (loginUser == null) {
             return "redirect:/login";
         }
-        activityService.signup(activityId, loginUser.getUserId());
+        String msg = activityService.signup(activityId, loginUser.getUserId());
+        if (msg != null) {
+            session.setAttribute("activityMsg", msg);
+        }
         return "redirect:/activity/detail/" + activityId;
     }
 
@@ -54,7 +60,10 @@ public class ActivityController {
         if (loginUser == null) {
             return "redirect:/login";
         }
-        activityService.cancelSignup(activityId, loginUser.getUserId());
+        String msg = activityService.cancelSignup(activityId, loginUser.getUserId());
+        if (msg != null) {
+            session.setAttribute("activityMsg", msg);
+        }
         return "redirect:/activity/detail/" + activityId;
     }
 

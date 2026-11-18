@@ -32,9 +32,9 @@ public class PetServiceImpl implements PetService {
     public boolean addPet(Pet pet) {
         // 生成宠物编号：PET + 时间戳
         pet.setPetNo("PET" + System.currentTimeMillis());
-        // 默认状态：待审核
+        // 默认状态：待领养（可直接在前台展示）
         if (pet.getAdoptStatus() == null) {
-            pet.setAdoptStatus(1);
+            pet.setAdoptStatus(2);
         }
         return petMapper.insertPet(pet) > 0;
     }

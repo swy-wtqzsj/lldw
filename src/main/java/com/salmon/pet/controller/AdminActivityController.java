@@ -22,6 +22,17 @@ public class AdminActivityController {
         return "admin/activity_list";
     }
 
+    @RequestMapping("/add")
+    public String addPage() {
+        return "admin/activity_form";
+    }
+
+    @RequestMapping("/edit/{activityId}")
+    public String editPage(@org.springframework.web.bind.annotation.PathVariable Integer activityId, Model model) {
+        model.addAttribute("activity", activityService.getById(activityId));
+        return "admin/activity_form";
+    }
+
     @RequestMapping("/save")
     public String save(Activity activity) {
         activityService.save(activity);

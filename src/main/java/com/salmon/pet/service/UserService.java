@@ -18,4 +18,10 @@ public interface UserService {
 
     /** 修改密码，返回错误信息；成功返回 null */
     String changePassword(Integer userId, String oldPassword, String newPassword, String confirmPassword);
+
+    /** 后台用户列表 */
+    java.util.List<User> getAdminList(String keyword);
+
+    /** 启用/禁用用户 */
+    boolean updateStatus(Integer userId, Integer status);
 }

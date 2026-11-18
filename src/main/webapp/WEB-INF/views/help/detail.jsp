@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -6,11 +6,12 @@
     <meta charset="UTF-8">
     <title>${help.title}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/">流浪猫狗救助系统</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/">流浪猫狗救助系统</a>
     </div>
 </nav>
 
@@ -38,10 +39,10 @@
             <!-- 发表评论 -->
             <c:choose>
                 <c:when test="${not empty sessionScope.loginUser}">
-                    <form action="/pet-adoption/help/comment" method="post" class="mb-4">
+                    <form action="${pageContext.request.contextPath}/help/comment" method="post" class="mb-4">
                         <input type="hidden" name="targetId" value="${help.helpId}">
                         <div class="input-group">
-                            <input type="text" name="content" class="form-control" placeholder="发表评论...">
+                            <input type="text" name="content" class="form-control" maxlength="500" placeholder="发表评论...">
                             <button type="submit" class="btn btn-primary">发表</button>
                         </div>
                     </form>
@@ -57,7 +58,10 @@
                     <div class="card-body py-2">
                         <div class="d-flex justify-content-between">
                             <strong>${comment.username}</strong>
-                            <small class="text-muted">${comment.commentTime}</small>
+                            <span>
+                                <small class="text-muted">${comment.commentTime}</small>
+                                <a href="${pageContext.request.contextPath}/report/publish?targetType=1&amp;targetId=${comment.commentId}" class="ms-2 small">举报</a>
+                            </span>
                         </div>
                         <p class="mb-0">${comment.content}</p>
                     </div>
@@ -74,6 +78,7 @@
                     <h5>求助信息</h5>
                     <p><strong>位置：</strong>${help.location}</p>
                     <p><strong>联系方式：</strong>${help.contact}</p>
+                    <a href="${pageContext.request.contextPath}/report/publish?targetType=2&amp;targetId=${help.helpId}" class="btn btn-sm btn-outline-danger">举报该求助</a>
                 </div>
             </div>
         </div>

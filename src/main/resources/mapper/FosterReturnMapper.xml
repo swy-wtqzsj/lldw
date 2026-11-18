@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.FosterReturnMapper">
+
+    <resultMap id="FosterReturnResultMap" type="com.salmon.pet.entity.FosterReturn">
+        <id property="returnId" column="return_id"/>
+        <result property="adoptId" column="adopt_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="petId" column="pet_id"/>
+        <result property="reason" column="reason"/>
+        <result property="description" column="description"/>
+        <result property="photo" column="photo"/>
+        <result property="status" column="status"/>
+        <result property="applyTime" column="apply_time"/>
+        <result property="auditAdmin" column="audit_admin"/>
+        <result property="auditOpinion" column="audit_opinion"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="petName" column="pet_name"/>
+        <result property="username" column="username"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.FosterReturn" useGeneratedKeys="true" keyProperty="returnId">
+        INSERT INTO foster_return (adopt_id, user_id, pet_id, reason, description, photo, status, apply_time)
+        VALUES (#{adoptId}, #{userId}, #{petId}, #{reason}, #{description}, #{photo}, 1, NOW())
+    </insert>
+
+    <select id="selectAdminList" resultMap="FosterReturnResultMap">
+        SELECT f.*, p.pet_name, u.username
+        FROM foster_return f
+        LEFT JOIN pet p ON f.pet_id = p.pet_id
+        LEFT JOIN user u ON f.user_id = u.user_id
+        <where>
+            <if test="status != null">
+                AND f.status = #{status}
+            </if>
+        </where>
+        ORDER BY f.apply_time DESC
+    </select>
+
+    <select id="selectMyList" resultMap="FosterReturnResultMap">
+        SELECT f.*, p.pet_name
+        FROM foster_return f
+        LEFT JOIN pet p ON f.pet_id = p.pet_id
+        WHERE f.user_id = #{userId}
+        ORDER BY f.apply_time DESC
+    </select>
+
+    <select id="selectById" resultMap="FosterReturnResultMap">
+        SELECT * FROM foster_return WHERE return_id = #{returnId}
+    </select>
+
+    <update id="audit">
+        UPDATE foster_return
+        SET status = #{status}, audit_opinion = #{auditOpinion}, audit_admin = #{auditAdmin}, audit_time = NOW()
+        WHERE return_id = #{returnId}
+    </update>
+
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.MaterialMapper">
+
+    <resultMap id="MaterialResultMap" type="com.salmon.pet.entity.Material">
+        <id property="materialId" column="material_id"/>
+        <result property="name" column="name"/>
+        <result property="category" column="category"/>
+        <result property="quantity" column="quantity"/>
+        <result property="unit" column="unit"/>
+        <result property="warnThreshold" column="warn_threshold"/>
+        <result property="donor" column="donor"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="selectList" resultMap="MaterialResultMap">
+        SELECT * FROM material
+        <where>
+            <if test="category != null">
+                AND category = #{category}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (name LIKE CONCAT('%', #{keyword}, '%')
+                  OR donor LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY material_id DESC
+    </select>
+
+    <select id="selectById" resultMap="MaterialResultMap">
+        SELECT * FROM material WHERE material_id = #{materialId}
+    </select>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.Material"
+            useGeneratedKeys="true" keyProperty="materialId">
+        INSERT INTO material (name, category, quantity, unit, warn_threshold, donor, create_time, update_time)
+        VALUES (#{name}, #{category}, #{quantity}, #{unit}, #{warnThreshold}, #{donor}, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="com.salmon.pet.entity.Material">
+        UPDATE material
+        SET name = #{name},
+            category = #{category},
+            unit = #{unit},
+            warn_threshold = #{warnThreshold},
+            donor = #{donor},
+            update_time = NOW()
+        WHERE material_id = #{materialId}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM material WHERE material_id = #{materialId}
+    </delete>
+
+    <update id="increaseStock">
+        UPDATE material
+        SET quantity = quantity + #{quantity},
+            update_time = NOW()
+        WHERE material_id = #{materialId}
+    </update>
+
+    <update id="decreaseStock">
+        UPDATE material
+        SET quantity = quantity - #{quantity},
+            update_time = NOW()
+        WHERE material_id = #{materialId}
+          AND quantity &gt;= #{quantity}
+    </update>
+
+    <select id="countLowStock" resultType="int">
+        SELECT COUNT(*) FROM material WHERE quantity &lt;= warn_threshold
+    </select>
+
+    <select id="countTotal" resultType="int">
+        SELECT COUNT(*) FROM material
+    </select>
+
+</mapper>

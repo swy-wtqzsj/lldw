@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -6,18 +6,19 @@
     <meta charset="UTF-8">
     <title>求助管理 - 后台</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/admin/dashboard">后台管理</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/dashboard">后台管理</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/admin/dashboard">看板</a></li>
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/admin/pet/list">宠物管理</a></li>
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/admin/pet/adoption_list">领养审核</a></li>
-                <li class="nav-item"><a class="nav-link active" href="/pet-adoption/admin/help/list">求助管理</a></li>
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/admin/help/comments">评论管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard">看板</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/list">宠物管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/adoption_list">领养审核</a></li>
+                <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/admin/help/list">求助管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/comments">评论管理</a></li>
             </ul>
         </div>
     </div>
@@ -28,10 +29,10 @@
 
     <!-- 筛选 -->
     <div class="mb-3">
-        <a href="/pet-adoption/admin/help/list" class="btn btn-sm ${empty auditStatus ? 'btn-primary' : 'btn-outline-primary'}">全部</a>
-        <a href="/pet-adoption/admin/help/list?auditStatus=1" class="btn btn-sm ${auditStatus == 1 ? 'btn-warning' : 'btn-outline-warning'}">待审核</a>
-        <a href="/pet-adoption/admin/help/list?auditStatus=2" class="btn btn-sm ${auditStatus == 2 ? 'btn-success' : 'btn-outline-success'}">已通过</a>
-        <a href="/pet-adoption/admin/help/list?auditStatus=3" class="btn btn-sm ${auditStatus == 3 ? 'btn-danger' : 'btn-outline-danger'}">已拒绝</a>
+        <a href="${pageContext.request.contextPath}/admin/help/list" class="btn btn-sm ${empty auditStatus ? 'btn-primary' : 'btn-outline-primary'}">全部</a>
+        <a href="${pageContext.request.contextPath}/admin/help/list?auditStatus=1" class="btn btn-sm ${auditStatus == 1 ? 'btn-warning' : 'btn-outline-warning'}">待审核</a>
+        <a href="${pageContext.request.contextPath}/admin/help/list?auditStatus=2" class="btn btn-sm ${auditStatus == 2 ? 'btn-success' : 'btn-outline-success'}">已通过</a>
+        <a href="${pageContext.request.contextPath}/admin/help/list?auditStatus=3" class="btn btn-sm ${auditStatus == 3 ? 'btn-danger' : 'btn-outline-danger'}">已拒绝</a>
     </div>
 
     <table class="table table-striped">
@@ -73,6 +74,19 @@
                                 审核
                             </button>
                         </c:if>
+                        <c:if test="${item.auditStatus == 2}">
+                            <form action="${pageContext.request.contextPath}/admin/help/status" method="post" class="d-flex gap-1">
+                                <input type="hidden" name="helpId" value="${item.helpId}">
+                                <select name="handleStatus" class="form-select form-select-sm" style="width: 100px;">
+                                    <option value="1" ${item.handleStatus == 1 ? 'selected' : ''}>待响应</option>
+                                    <option value="2" ${item.handleStatus == 2 ? 'selected' : ''}>已响应</option>
+                                    <option value="3" ${item.handleStatus == 3 ? 'selected' : ''}>处理中</option>
+                                    <option value="4" ${item.handleStatus == 4 ? 'selected' : ''}>已完成</option>
+                                    <option value="5" ${item.handleStatus == 5 ? 'selected' : ''}>已关闭</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-outline-primary">更新</button>
+                            </form>
+                        </c:if>
                     </td>
                 </tr>
 
@@ -84,7 +98,7 @@
                                 <h5 class="modal-title">审核求助 #${item.helpId}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            <form action="/pet-adoption/admin/help/audit" method="post">
+                            <form action="${pageContext.request.contextPath}/admin/help/audit" method="post">
                                 <div class="modal-body">
                                     <input type="hidden" name="helpId" value="${item.helpId}">
                                     <div class="mb-3">

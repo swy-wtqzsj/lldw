@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -6,18 +6,19 @@
     <meta charset="UTF-8">
     <title>${empty pet ? '新增宠物' : '编辑宠物'}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/admin/dashboard">后台管理</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/dashboard">后台管理</a>
     </div>
 </nav>
 
 <div class="container mt-4">
     <h3>${empty pet ? '新增宠物' : '编辑宠物'}</h3>
 
-    <form action="${empty pet ? '/pet-adoption/admin/pet/save' : '/pet-adoption/admin/pet/update'}" method="post">
+    <form action="${pageContext.request.contextPath}${empty pet ? '/admin/pet/save' : '/admin/pet/update'}" method="post">
         <c:if test="${not empty pet}">
             <input type="hidden" name="petId" value="${pet.petId}">
         </c:if>
@@ -61,8 +62,11 @@
                 </select>
             </div>
             <div class="col-md-6">
-                <label class="form-label">封面照片路径</label>
-                <input type="text" name="photo" class="form-control" value="${pet.photo}">
+                <label class="form-label">封面照片</label>
+                <input type="text" id="photo" name="photo" class="form-control" value="${pet.photo}">
+                <input type="file" accept="image/*" class="form-control mt-2" onchange="uploadImage(this,'photo','photoPreview')">
+                <img id="photoPreview" class="mt-2 rounded" style="max-height: 120px; display: ${empty pet.photo ? 'none' : 'block'};"
+                     src="${pageContext.request.contextPath}${empty pet.photo ? '/static/img/default.svg' : pet.photo}" alt="预览">
             </div>
         </div>
 
@@ -97,7 +101,7 @@
             <label class="form-label">领养状态</label>
             <select name="adoptStatus" class="form-select">
                 <option value="1" ${pet.adoptStatus == 1 ? 'selected' : ''}>待审核</option>
-                <option value="2" ${pet.adoptStatus == 2 ? 'selected' : ''}>待领养</option>
+                <option value="2" ${empty pet or pet.adoptStatus == 2 ? 'selected' : ''}>待领养</option>
                 <option value="3" ${pet.adoptStatus == 3 ? 'selected' : ''}>审核中</option>
                 <option value="4" ${pet.adoptStatus == 4 ? 'selected' : ''}>已被领养</option>
                 <option value="5" ${pet.adoptStatus == 5 ? 'selected' : ''}>退养回流</option>
@@ -107,8 +111,10 @@
         </div>
 
         <button type="submit" class="btn btn-primary">保存</button>
-        <a href="/pet-adoption/admin/pet/list" class="btn btn-outline-secondary">返回</a>
+        <a href="${pageContext.request.contextPath}/admin/pet/list" class="btn btn-outline-secondary">返回</a>
     </form>
 </div>
+<script>window.APP_CTX = '${pageContext.request.contextPath}';</script>
+<script src="${pageContext.request.contextPath}/static/js/upload.js"></script>
 </body>
 </html>

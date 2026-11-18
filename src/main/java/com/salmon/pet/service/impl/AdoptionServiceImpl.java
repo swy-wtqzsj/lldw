@@ -67,16 +67,22 @@ public class AdoptionServiceImpl implements AdoptionService {
     @Override
     @Transactional
     public boolean auditAdoption(Integer adoptId, Integer status, String auditOpinion, Integer adminId) {
-        // 1. 更新申请状态
+        Adoption adoption = adoptionMapper.selectAdoptionById(adoptId);
+        if (adoption == null || adoption.getStatus() == null || adoption.getStatus() != 1) {
+            return false;
+        }
+
         adoptionMapper.auditAdoption(adoptId, status, auditOpinion, adminId);
 
-        // 2. 如果审核通过，更新宠物状态为"已被领养"
-        Adoption adoption = adoptionMapper.selectAdoptionById(adoptId);
-        if (adoption != null && status == 2) {
+        if (status == 2) {
+            // 审核通过：宠物变为已被领养，并自动拒绝该宠物其他待审核申请
             petMapper.updateStatus(adoption.getPetId(), 4);
-        } else if (adoption != null && status == 3) {
-            // 审核不通过，宠物回到"待领养"
-            petMapper.updateStatus(adoption.getPetId(), 2);
+            adoptionMapper.rejectOtherPending(adoption.getPetId(), adoptId, adminId);
+        } else if (status == 3) {
+            // 审核不通过：仅在该宠物没有已通过申请时，才恢复为待领养
+            if (adoptionMapper.countApprovedByPet(adoption.getPetId()) == 0) {
+                petMapper.updateStatus(adoption.getPetId(), 2);
+            }
         }
 
         return true;

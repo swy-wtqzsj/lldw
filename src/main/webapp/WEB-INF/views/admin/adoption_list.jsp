@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -6,16 +6,22 @@
     <meta charset="UTF-8">
     <title>领养审核 - 后台</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/admin/dashboard">后台管理</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/dashboard">后台管理</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/admin/dashboard">看板</a></li>
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/admin/pet/list">宠物管理</a></li>
-                <li class="nav-item"><a class="nav-link active" href="/pet-adoption/admin/pet/adoption_list">领养审核</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard">看板</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/list">宠物管理</a></li>
+                <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/admin/pet/adoption_list">领养审核</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/user/list">用户管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/list">求助管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/comments">评论管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/activity/list">活动管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/knowledge/list">知识管理</a></li>
             </ul>
         </div>
     </div>
@@ -26,10 +32,10 @@
 
     <!-- 筛选 -->
     <div class="mb-3">
-        <a href="/pet-adoption/admin/pet/adoption_list" class="btn btn-sm ${empty status ? 'btn-primary' : 'btn-outline-primary'}">全部</a>
-        <a href="/pet-adoption/admin/pet/adoption_list?status=1" class="btn btn-sm ${status == 1 ? 'btn-warning' : 'btn-outline-warning'}">待审核</a>
-        <a href="/pet-adoption/admin/pet/adoption_list?status=2" class="btn btn-sm ${status == 2 ? 'btn-success' : 'btn-outline-success'}">已通过</a>
-        <a href="/pet-adoption/admin/pet/adoption_list?status=3" class="btn btn-sm ${status == 3 ? 'btn-danger' : 'btn-outline-danger'}">已拒绝</a>
+        <a href="${pageContext.request.contextPath}/admin/pet/adoption_list" class="btn btn-sm ${empty status ? 'btn-primary' : 'btn-outline-primary'}">全部</a>
+        <a href="${pageContext.request.contextPath}/admin/pet/adoption_list?status=1" class="btn btn-sm ${status == 1 ? 'btn-warning' : 'btn-outline-warning'}">待审核</a>
+        <a href="${pageContext.request.contextPath}/admin/pet/adoption_list?status=2" class="btn btn-sm ${status == 2 ? 'btn-success' : 'btn-outline-success'}">已通过</a>
+        <a href="${pageContext.request.contextPath}/admin/pet/adoption_list?status=3" class="btn btn-sm ${status == 3 ? 'btn-danger' : 'btn-outline-danger'}">已拒绝</a>
     </div>
 
     <table class="table table-striped">
@@ -85,7 +91,7 @@
                                 <h5 class="modal-title">审核领养申请 #${item.adoptId}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            <form action="/pet-adoption/admin/pet/audit" method="post">
+                            <form action="${pageContext.request.contextPath}/admin/pet/audit" method="post">
                                 <div class="modal-body">
                                     <input type="hidden" name="adoptId" value="${item.adoptId}">
                                     <div class="mb-3">

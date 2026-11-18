@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>个人中心 - 流浪猫狗救助系统</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -69,6 +70,15 @@
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">认证与举报</h3>
+                </div>
+                <div class="panel-body">
+                    <a href="${pageContext.request.contextPath}/cert/apply" class="btn btn-primary">认证申请</a>
+                    <a href="${pageContext.request.contextPath}/report/my" class="btn btn-default">我的举报</a>
                 </div>
             </div>
         </div>

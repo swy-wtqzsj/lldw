@@ -23,6 +23,19 @@ public class AdminKnowledgeController {
         return "admin/knowledge_list";
     }
 
+    @RequestMapping("/add")
+    public String addPage(Model model) {
+        model.addAttribute("categories", knowledgeService.getAllCategory());
+        return "admin/knowledge_form";
+    }
+
+    @RequestMapping("/edit/{articleId}")
+    public String editPage(@org.springframework.web.bind.annotation.PathVariable Integer articleId, Model model) {
+        model.addAttribute("categories", knowledgeService.getAllCategory());
+        model.addAttribute("knowledge", knowledgeService.getForEdit(articleId));
+        return "admin/knowledge_form";
+    }
+
     @RequestMapping("/save")
     public String save(Knowledge knowledge) {
         knowledgeService.save(knowledge);

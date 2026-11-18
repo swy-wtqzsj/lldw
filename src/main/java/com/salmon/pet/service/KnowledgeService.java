@@ -13,6 +13,8 @@ public interface KnowledgeService {
 
     Knowledge getById(Integer articleId);
 
+    Knowledge getForEdit(Integer articleId);
+
     List<Knowledge> getAdminList(Integer categoryId);
 
     boolean save(Knowledge knowledge);

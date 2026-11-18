@@ -42,4 +42,16 @@ public interface AdoptionMapper {
      * 查询用户某只宠物的申请（防止重复申请）
      */
     Adoption selectUserPetApply(@Param("userId") Integer userId, @Param("petId") Integer petId);
+
+    /**
+     * 拒绝同一宠物下其他待审核申请
+     */
+    int rejectOtherPending(@Param("petId") Integer petId,
+                           @Param("adoptId") Integer adoptId,
+                           @Param("auditAdminId") Integer auditAdminId);
+
+    /**
+     * 统计某宠物已通过的领养申请数
+     */
+    int countApprovedByPet(@Param("petId") Integer petId);
 }

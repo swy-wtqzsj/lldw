@@ -81,4 +81,19 @@
         LIMIT 1
     </select>
 
+    <!-- 拒绝同一宠物下其他待审核申请 -->
+    <update id="rejectOtherPending">
+        UPDATE adoption
+        SET status = 3,
+            audit_opinion = '该宠物已被其他申请人领养',
+            audit_admin_id = #{auditAdminId},
+            audit_time = NOW()
+        WHERE pet_id = #{petId} AND status = 1 AND adopt_id != #{adoptId}
+    </update>
+
+    <!-- 统计某宠物已通过的领养申请数 -->
+    <select id="countApprovedByPet" resultType="int">
+        SELECT COUNT(*) FROM adoption WHERE pet_id = #{petId} AND status = 2
+    </select>
+
 </mapper>

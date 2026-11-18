@@ -22,3 +22,6 @@ logs/
 # 临时文件
 *.tmp
 *.bak
+
+# 运行期上传文件
+src/main/webapp/static/uploads/

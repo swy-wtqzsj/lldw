@@ -10,8 +10,8 @@
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
         <result property="location" column="location"/>
-        <result property="maxPeople" column="max_people"/>
-        <result property="coverImage" column="cover_image"/>
+        <result property="maxPeople" column="quota"/>
+        <result property="coverImage" column="cover"/>
         <result property="status" column="status"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
@@ -29,32 +29,33 @@
     <!-- 查询用户是否已报名 -->
     <select id="selectUserSignup" resultType="int">
         SELECT COUNT(*) FROM activity_signup
-        WHERE activity_id = #{activityId} AND user_id = #{userId} AND status != 3
+        WHERE activity_id = #{activityId} AND user_id = #{userId} AND status IN (1, 2)
     </select>
 
     <!-- 查询活动报名人数 -->
     <select id="selectSignupCount" resultType="int">
         SELECT COUNT(*) FROM activity_signup
-        WHERE activity_id = #{activityId} AND status != 3
+        WHERE activity_id = #{activityId} AND status IN (1, 2)
     </select>
 
     <!-- 报名活动 -->
     <insert id="insertSignup">
         INSERT INTO activity_signup (activity_id, user_id, signup_time, status)
         VALUES (#{activityId}, #{userId}, NOW(), 1)
+        ON DUPLICATE KEY UPDATE status = 1, signup_time = NOW()
     </insert>
 
     <!-- 取消报名 -->
     <update id="cancelSignup">
-        UPDATE activity_signup SET status = 3
-        WHERE activity_id = #{activityId} AND user_id = #{userId}
+        UPDATE activity_signup SET status = 4
+        WHERE activity_id = #{activityId} AND user_id = #{userId} AND status IN (1, 2)
     </update>
 
     <!-- 查询用户报名的活动列表 -->
     <select id="selectMySignupList" resultMap="ActivityResultMap">
         SELECT a.* FROM activity a
         INNER JOIN activity_signup s ON a.activity_id = s.activity_id
-        WHERE s.user_id = #{userId} AND s.status != 3
+        WHERE s.user_id = #{userId} AND s.status IN (1, 2)
         ORDER BY s.signup_time DESC
     </select>
 
@@ -71,7 +72,7 @@
 
     <!-- 新增活动 -->
     <insert id="insertActivity" parameterType="com.salmon.pet.entity.Activity" useGeneratedKeys="true" keyProperty="activityId">
-        INSERT INTO activity (title, content, start_time, end_time, location, max_people, cover_image, status, create_time)
+        INSERT INTO activity (title, content, start_time, end_time, location, quota, cover, status, create_time)
         VALUES (#{title}, #{content}, #{startTime}, #{endTime}, #{location}, #{maxPeople}, #{coverImage}, #{status}, NOW())
     </insert>
 
@@ -83,8 +84,8 @@
             start_time = #{startTime},
             end_time = #{endTime},
             location = #{location},
-            max_people = #{maxPeople},
-            cover_image = #{coverImage},
+            quota = #{maxPeople},
+            cover = #{coverImage},
             status = #{status}
         WHERE activity_id = #{activityId}
     </update>

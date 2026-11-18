@@ -32,6 +32,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
+    public Knowledge getForEdit(Integer articleId) {
+        return knowledgeMapper.selectById(articleId);
+    }
+
+    @Override
     public List<Knowledge> getAdminList(Integer categoryId) {
         return knowledgeMapper.selectAdminList(categoryId);
     }

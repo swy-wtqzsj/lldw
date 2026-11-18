@@ -28,6 +28,9 @@ public class PetController {
     @Autowired
     private AdoptionService adoptionService;
 
+    @Autowired
+    private com.salmon.pet.service.CommentService commentService;
+
     /**
      * 宠物列表页
      */
@@ -64,6 +67,7 @@ public class PetController {
     public String petDetail(@PathVariable Integer petId, Model model) {
         Pet pet = petService.getPetById(petId);
         model.addAttribute("pet", pet);
+        model.addAttribute("comments", commentService.getListByTarget(1, petId));
         return "pet/detail";
     }
 

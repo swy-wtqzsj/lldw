@@ -18,6 +18,9 @@ public class KnowledgeController {
     @Autowired
     private KnowledgeService knowledgeService;
 
+    @Autowired
+    private com.salmon.pet.service.CommentService commentService;
+
     @RequestMapping("/list")
     public String list(@RequestParam(required = false) Integer categoryId, Model model) {
         model.addAttribute("categories", knowledgeService.getAllCategory());
@@ -31,6 +34,7 @@ public class KnowledgeController {
     public String detail(@PathVariable Integer articleId, Model model) {
         Knowledge knowledge = knowledgeService.getById(articleId);
         model.addAttribute("knowledge", knowledge);
+        model.addAttribute("comments", commentService.getListByTarget(3, articleId));
         return "knowledge/detail";
     }
 }

@@ -1,15 +1,18 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>${knowledge.title}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/">流浪猫狗救助系统</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/">流浪猫狗救助系统</a>
     </div>
 </nav>
 
@@ -26,7 +29,44 @@
     </div>
 
     <hr>
-    <a href="/pet-adoption/knowledge/list" class="btn btn-outline-secondary">返回列表</a>
+    <a href="${pageContext.request.contextPath}/knowledge/list" class="btn btn-outline-secondary">返回列表</a>
+
+    <hr>
+
+    <h5>留言</h5>
+    <c:choose>
+        <c:when test="${not empty sessionScope.loginUser}">
+            <form action="${pageContext.request.contextPath}/comment/add" method="post" class="mb-3">
+                <input type="hidden" name="targetType" value="3">
+                <input type="hidden" name="targetId" value="${knowledge.articleId}">
+                <div class="input-group">
+                    <input type="text" name="content" class="form-control" maxlength="500" placeholder="写下你的留言...">
+                    <button type="submit" class="btn btn-primary">发表</button>
+                </div>
+            </form>
+        </c:when>
+        <c:otherwise>
+            <p class="text-muted">登录后可发表留言</p>
+        </c:otherwise>
+    </c:choose>
+
+    <c:forEach var="comment" items="${comments}">
+        <div class="card mb-2">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between">
+                    <strong>${comment.username}</strong>
+                    <span>
+                        <small class="text-muted"><fmt:formatDate value="${comment.commentTime}" pattern="yyyy-MM-dd HH:mm"/></small>
+                        <a href="${pageContext.request.contextPath}/report/publish?targetType=1&amp;targetId=${comment.commentId}" class="ms-2 small">举报</a>
+                    </span>
+                </div>
+                <p class="mb-0">${comment.content}</p>
+            </div>
+        </div>
+    </c:forEach>
+    <c:if test="${empty comments}">
+        <p class="text-muted">暂无留言，来抢沙发~</p>
+    </c:if>
 </div>
 </body>
 </html>

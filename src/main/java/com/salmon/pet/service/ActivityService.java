@@ -13,9 +13,11 @@ public interface ActivityService {
 
     Activity getById(Integer activityId);
 
-    boolean signup(Integer activityId, Integer userId);
+    String signup(Integer activityId, Integer userId);
 
-    boolean cancelSignup(Integer activityId, Integer userId);
+    String cancelSignup(Integer activityId, Integer userId);
+
+    boolean isSignedUp(Integer activityId, Integer userId);
 
     List<Activity> getMySignupList(Integer userId);
 

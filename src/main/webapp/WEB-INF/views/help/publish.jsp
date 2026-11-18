@@ -1,25 +1,26 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>发布求助</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/">流浪猫狗救助系统</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/">流浪猫狗救助系统</a>
     </div>
 </nav>
 
 <div class="container mt-4">
     <h3>发布求助</h3>
 
-    <form action="/pet-adoption/help/save" method="post">
+    <form action="${pageContext.request.contextPath}/help/save" method="post">
         <div class="mb-3">
             <label class="form-label">求助标题</label>
-            <input type="text" name="title" class="form-control" required>
+            <input type="text" name="title" class="form-control" maxlength="50" required>
         </div>
 
         <div class="mb-3">
@@ -48,7 +49,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">提交发布</button>
-        <a href="/pet-adoption/help/list" class="btn btn-outline-secondary">返回</a>
+        <a href="${pageContext.request.contextPath}/help/list" class="btn btn-outline-secondary">返回</a>
     </form>
 </div>
 </body>

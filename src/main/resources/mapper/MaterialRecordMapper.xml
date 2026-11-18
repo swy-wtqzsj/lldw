@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.MaterialRecordMapper">
+
+    <resultMap id="MaterialRecordResultMap" type="com.salmon.pet.entity.MaterialRecord">
+        <id property="recordId" column="record_id"/>
+        <result property="materialId" column="material_id"/>
+        <result property="type" column="type"/>
+        <result property="quantity" column="quantity"/>
+        <result property="usageDesc" column="usage_desc"/>
+        <result property="operator" column="operator"/>
+        <result property="recordTime" column="record_time"/>
+        <result property="materialName" column="material_name"/>
+    </resultMap>
+
+    <select id="selectByMaterial" resultMap="MaterialRecordResultMap">
+        SELECT r.*, m.name AS material_name
+        FROM material_record r
+        LEFT JOIN material m ON r.material_id = m.material_id
+        WHERE r.material_id = #{materialId}
+        ORDER BY r.record_time DESC, r.record_id DESC
+    </select>
+
+    <select id="selectRecent" resultMap="MaterialRecordResultMap">
+        SELECT r.*, m.name AS material_name
+        FROM material_record r
+        LEFT JOIN material m ON r.material_id = m.material_id
+        ORDER BY r.record_time DESC, r.record_id DESC
+        LIMIT #{limit}
+    </select>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.MaterialRecord"
+            useGeneratedKeys="true" keyProperty="recordId">
+        INSERT INTO material_record (material_id, type, quantity, usage_desc, operator, record_time)
+        VALUES (#{materialId}, #{type}, #{quantity}, #{usageDesc}, #{operator}, NOW())
+    </insert>
+
+    <select id="countByMaterial" resultType="int">
+        SELECT COUNT(*) FROM material_record WHERE material_id = #{materialId}
+    </select>
+
+</mapper>

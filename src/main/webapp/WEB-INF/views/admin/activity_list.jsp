@@ -1,21 +1,35 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>活动管理 - 后台</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/admin/dashboard">后台管理</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/dashboard">后台管理</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/list">宠物管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/adoption_list">领养审核</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/list">求助管理</a></li>
+                <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/admin/activity/list">活动管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/knowledge/list">知识管理</a></li>
+            </ul>
+        </div>
     </div>
 </nav>
 
 <div class="container mt-4">
-    <h3>活动管理</h3>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">活动管理</h3>
+        <a href="${pageContext.request.contextPath}/admin/activity/add" class="btn btn-primary">新增活动</a>
+    </div>
 
     <table class="table table-striped">
         <thead>
@@ -26,6 +40,7 @@
                 <th>地点</th>
                 <th>人数</th>
                 <th>状态</th>
+                <th>操作</th>
             </tr>
         </thead>
         <tbody>
@@ -33,10 +48,13 @@
                 <tr>
                     <td>${item.activityId}</td>
                     <td>${item.title}</td>
-                    <td>${item.startTime}</td>
+                    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm"/></td>
                     <td>${item.location}</td>
-                    <td>${item.signupCount}/${item.maxPeople}</td>
+                    <td>${item.signupCount}/${item.maxPeople == 0 ? '不限' : item.maxPeople}</td>
                     <td>${item.statusText}</td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/admin/activity/edit/${item.activityId}" class="btn btn-sm btn-outline-primary">编辑</a>
+                    </td>
                 </tr>
             </c:forEach>
         </tbody>

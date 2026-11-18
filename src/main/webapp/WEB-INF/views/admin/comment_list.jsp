@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -6,17 +6,18 @@
     <meta charset="UTF-8">
     <title>评论管理 - 后台</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/theme.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/pet-adoption/admin/dashboard">后台管理</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/dashboard">后台管理</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/admin/dashboard">看板</a></li>
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/admin/pet/list">宠物管理</a></li>
-                <li class="nav-item"><a class="nav-link" href="/pet-adoption/admin/help/list">求助管理</a></li>
-                <li class="nav-item"><a class="nav-link active" href="/pet-adoption/admin/help/comments">评论管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard">看板</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/list">宠物管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/list">求助管理</a></li>
+                <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/admin/help/comments">评论管理</a></li>
             </ul>
         </div>
     </div>
@@ -64,7 +65,7 @@
                         </c:choose>
                     </td>
                     <td>
-                        <a href="/pet-adoption/admin/help/comment_delete?commentId=${item.commentId}" 
+                        <a href="${pageContext.request.contextPath}/admin/help/comment_delete?commentId=${item.commentId}" 
                            class="btn btn-sm btn-outline-danger" 
                            onclick="return confirm('确认删除？')">删除</a>
                     </td>

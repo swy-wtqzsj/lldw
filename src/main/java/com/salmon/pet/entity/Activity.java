@@ -1,5 +1,7 @@
 package com.salmon.pet.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -9,7 +11,9 @@ public class Activity {
     private Integer activityId;      // 活动ID
     private String title;            // 活动标题
     private String content;           // 活动内容
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date startTime;          // 开始时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date endTime;            // 结束时间
     private String location;         // 活动地点
     private Integer maxPeople;       // 人数上限

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.ReportMapper">
+
+    <resultMap id="ReportResultMap" type="com.salmon.pet.entity.Report">
+        <id property="reportId" column="report_id"/>
+        <result property="reporterId" column="reporter_id"/>
+        <result property="targetType" column="target_type"/>
+        <result property="targetId" column="target_id"/>
+        <result property="reason" column="reason"/>
+        <result property="evidence" column="evidence"/>
+        <result property="status" column="status"/>
+        <result property="reportTime" column="report_time"/>
+        <result property="handleAdmin" column="handle_admin"/>
+        <result property="handleTime" column="handle_time"/>
+        <result property="handleOpinion" column="handle_opinion"/>
+        <result property="reporterName" column="reporter_name"/>
+        <result property="handlerName" column="handler_name"/>
+    </resultMap>
+
+    <select id="selectList" resultMap="ReportResultMap">
+        SELECT r.*, u.username AS reporter_name, a.username AS handler_name
+        FROM report r
+        LEFT JOIN user u ON r.reporter_id = u.user_id
+        LEFT JOIN user a ON r.handle_admin = a.user_id
+        <where>
+            <if test="status != null">
+                AND r.status = #{status}
+            </if>
+            <if test="targetType != null">
+                AND r.target_type = #{targetType}
+            </if>
+        </where>
+        ORDER BY r.report_id DESC
+    </select>
+
+    <select id="selectById" resultMap="ReportResultMap">
+        SELECT r.*, u.username AS reporter_name, a.username AS handler_name
+        FROM report r
+        LEFT JOIN user u ON r.reporter_id = u.user_id
+        LEFT JOIN user a ON r.handle_admin = a.user_id
+        WHERE r.report_id = #{reportId}
+    </select>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.Report"
+            useGeneratedKeys="true" keyProperty="reportId">
+        INSERT INTO report (reporter_id, target_type, target_id, reason, evidence, status, report_time)
+        VALUES (#{reporterId}, #{targetType}, #{targetId}, #{reason}, #{evidence}, 1, NOW())
+    </insert>
+
+    <select id="selectByReporter" resultMap="ReportResultMap">
+        SELECT r.*, u.username AS reporter_name, a.username AS handler_name
+        FROM report r
+        LEFT JOIN user u ON r.reporter_id = u.user_id
+        LEFT JOIN user a ON r.handle_admin = a.user_id
+        WHERE r.reporter_id = #{reporterId}
+        ORDER BY r.report_id DESC
+    </select>
+
+    <update id="handle">
+        UPDATE report
+        SET status = #{status},
+            handle_admin = #{handleAdmin},
+            handle_time = NOW(),
+            handle_opinion = #{handleOpinion}
+        WHERE report_id = #{reportId}
+    </update>
+
+    <select id="countPending" resultType="int">
+        SELECT COUNT(*) FROM report WHERE status = 1
+    </select>
+
+</mapper>

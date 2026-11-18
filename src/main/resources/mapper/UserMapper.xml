@@ -58,4 +58,26 @@
         UPDATE user SET password = #{password} WHERE user_id = #{userId}
     </update>
 
+    <select id="selectAdminList" resultMap="userMap">
+        SELECT user_id, username, nickname, phone, email, role, status,
+               adopt_status, credit_score, register_time
+        FROM user
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (username LIKE CONCAT('%', #{keyword}, '%')
+                  OR nickname LIKE CONCAT('%', #{keyword}, '%')
+                  OR phone LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY register_time DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE user SET status = #{status} WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateRole">
+        UPDATE user SET role = #{role} WHERE user_id = #{userId}
+    </update>
+
 </mapper>
