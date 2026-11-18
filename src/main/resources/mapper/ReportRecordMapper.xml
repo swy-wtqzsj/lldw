@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.ReportRecordMapper">
+
+    <resultMap id="reportMap" type="com.salmon.pet.entity.ReportRecord">
+        <id property="reportId" column="report_id"/>
+        <result property="reporterId" column="reporter_id"/>
+        <result property="targetType" column="target_type"/>
+        <result property="targetId" column="target_id"/>
+        <result property="reason" column="reason"/>
+        <result property="description" column="description"/>
+        <result property="evidence" column="evidence"/>
+        <result property="status" column="status"/>
+        <result property="handleResult" column="handle_result"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="reportTime" column="report_time"/>
+        <result property="handleTime" column="handle_time"/>
+        <result property="reporterName" column="reporter_name"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.ReportRecord" useGeneratedKeys="true" keyProperty="reportId">
+        INSERT INTO report_record (reporter_id, target_type, target_id, reason, description,
+                                   evidence, status, report_time)
+        VALUES (#{reporterId}, #{targetType}, #{targetId}, #{reason}, #{description},
+                #{evidence}, 1, NOW())
+    </insert>
+
+    <select id="selectByReporter" resultMap="reportMap">
+        SELECT * FROM report_record WHERE reporter_id = #{reporterId} ORDER BY report_time DESC
+    </select>
+
+    <select id="selectList" resultMap="reportMap">
+        SELECT r.*, u.username AS reporter_name
+        FROM report_record r LEFT JOIN user u ON r.reporter_id = u.user_id
+        <where>
+            <if test="status != null">
+                AND r.status = #{status}
+            </if>
+        </where>
+        ORDER BY r.report_time DESC
+    </select>
+
+    <select id="selectById" resultMap="reportMap">
+        SELECT * FROM report_record WHERE report_id = #{reportId}
+    </select>
+
+    <update id="handle">
+        UPDATE report_record
+        SET status = #{status},
+            handle_result = #{handleResult},
+            admin_id = #{adminId},
+            handle_time = NOW()
+        WHERE report_id = #{reportId}
+    </update>
+
+    <select id="countByStatus" resultType="int">
+        SELECT COUNT(*) FROM report_record WHERE status = #{status}
+    </select>
+
+</mapper>

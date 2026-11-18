@@ -58,4 +58,51 @@
         UPDATE user SET password = #{password} WHERE user_id = #{userId}
     </update>
 
+    <!-- ============ A组新增 ============ -->
+
+    <select id="selectUserList" resultMap="userMap">
+        SELECT * FROM user
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (username LIKE CONCAT('%', #{keyword}, '%')
+                     OR nickname LIKE CONCAT('%', #{keyword}, '%')
+                     OR phone LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="role != null">
+                AND role = #{role}
+            </if>
+        </where>
+        ORDER BY user_id DESC
+    </select>
+
+    <select id="selectByEmail" resultMap="userMap">
+        SELECT * FROM user WHERE email = #{email}
+    </select>
+
+    <update id="updateAdmin">
+        UPDATE user
+        SET role = #{role},
+            status = #{status},
+            adopt_status = #{adoptStatus},
+            credit_score = #{creditScore}
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM user WHERE user_id = #{userId}
+    </delete>
+
+    <select id="countUsers" resultType="int">
+        SELECT COUNT(*) FROM user
+    </select>
+
+    <select id="selectAdmins" resultMap="userMap">
+        SELECT * FROM user WHERE role &gt;= 3 ORDER BY role DESC, user_id ASC
+    </select>
+
+    <insert id="insertAdmin" parameterType="com.salmon.pet.entity.User" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO user (username, password, nickname, real_name, role, status, adopt_status, credit_score, register_time)
+        VALUES (#{username}, #{password}, #{nickname}, #{realName}, #{role}, 1, 1, 100, NOW())
+    </insert>
+
 </mapper>

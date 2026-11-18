@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.PunishmentMapper">
+
+    <resultMap id="punishmentMap" type="com.salmon.pet.entity.Punishment">
+        <id property="punishId" column="punish_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="type" column="type"/>
+        <result property="reason" column="reason"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="status" column="status"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="appealStatus" column="appeal_status"/>
+        <result property="appealReason" column="appeal_reason"/>
+        <result property="appealTime" column="appeal_time"/>
+        <result property="appealResult" column="appeal_result"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.Punishment" useGeneratedKeys="true" keyProperty="punishId">
+        INSERT INTO punishment (user_id, type, reason, start_time, end_time, status, admin_id, appeal_status)
+        VALUES (#{userId}, #{type}, #{reason}, NOW(), #{endTime}, 1, #{adminId}, 0)
+    </insert>
+
+    <select id="selectByUser" resultMap="punishmentMap">
+        SELECT * FROM punishment WHERE user_id = #{userId} ORDER BY start_time DESC
+    </select>
+
+    <select id="selectActiveByUser" resultMap="punishmentMap">
+        SELECT * FROM punishment
+        WHERE user_id = #{userId} AND status = 1
+          AND (end_time IS NULL OR end_time &gt; NOW())
+    </select>
+
+    <select id="selectList" resultMap="punishmentMap">
+        SELECT p.*, u.username, u.nickname
+        FROM punishment p LEFT JOIN user u ON p.user_id = u.user_id
+        <where>
+            <if test="status != null">
+                AND p.status = #{status}
+            </if>
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+        </where>
+        ORDER BY p.start_time DESC
+    </select>
+
+    <select id="selectById" resultMap="punishmentMap">
+        SELECT * FROM punishment WHERE punish_id = #{punishId}
+    </select>
+
+    <update id="release">
+        UPDATE punishment SET status = 2 WHERE punish_id = #{punishId}
+    </update>
+
+    <update id="submitAppeal">
+        UPDATE punishment
+        SET appeal_status = 1, appeal_reason = #{appealReason}, appeal_time = NOW()
+        WHERE punish_id = #{punishId}
+    </update>
+
+    <update id="handleAppeal">
+        UPDATE punishment
+        SET appeal_status = #{appealStatus},
+            appeal_result = #{appealResult},
+            status = CASE WHEN #{appealStatus} = 2 THEN 2 ELSE status END
+        WHERE punish_id = #{punishId}
+    </update>
+
+    <update id="autoExpire">
+        UPDATE punishment
+        SET status = 3
+        WHERE status = 1 AND end_time IS NOT NULL AND end_time &lt;= NOW()
+    </update>
+
+    <select id="countPendingAppeals" resultType="int">
+        SELECT COUNT(*) FROM punishment WHERE appeal_status = 1
+    </select>
+
+</mapper>
