@@ -16,7 +16,9 @@
             (SELECT COUNT(*) FROM report WHERE status = 1) AS report_pending,
             (SELECT COUNT(*) FROM team_cert WHERE status = 1) + (SELECT COUNT(*) FROM volunteer_cert WHERE status = 1) AS cert_pending,
             (SELECT COUNT(*) FROM material) AS material_total,
-            (SELECT COUNT(*) FROM material WHERE quantity &lt;= warn_threshold) AS material_low
+            (SELECT COUNT(*) FROM material WHERE quantity &lt;= warn_threshold) AS material_low,
+            (SELECT COUNT(*) FROM lost_pet WHERE status = 1) AS lost_pending,
+            (SELECT COUNT(*) FROM appeal WHERE status = 1) AS appeal_pending
     </select>
 
 </mapper>

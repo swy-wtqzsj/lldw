@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.LostPetMapper">
+
+    <resultMap id="LostPetResultMap" type="com.salmon.pet.entity.LostPet">
+        <id property="lostId" column="lost_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="petName" column="pet_name"/>
+        <result property="species" column="species"/>
+        <result property="breed" column="breed"/>
+        <result property="gender" column="gender"/>
+        <result property="features" column="features"/>
+        <result property="photo" column="photo"/>
+        <result property="lostTime" column="lost_time"/>
+        <result property="lostLocation" column="lost_location"/>
+        <result property="contact" column="contact"/>
+        <result property="reward" column="reward"/>
+        <result property="status" column="status"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="username" column="username"/>
+    </resultMap>
+
+    <select id="selectPublished" resultMap="LostPetResultMap">
+        SELECT l.*, u.username
+        FROM lost_pet l
+        LEFT JOIN user u ON l.user_id = u.user_id
+        WHERE l.status = 2
+        ORDER BY l.publish_time DESC
+    </select>
+
+    <select id="selectList" resultMap="LostPetResultMap">
+        SELECT l.*, u.username
+        FROM lost_pet l
+        LEFT JOIN user u ON l.user_id = u.user_id
+        <where>
+            <if test="status != null">
+                AND l.status = #{status}
+            </if>
+        </where>
+        ORDER BY l.lost_id DESC
+    </select>
+
+    <select id="selectById" resultMap="LostPetResultMap">
+        SELECT l.*, u.username
+        FROM lost_pet l
+        LEFT JOIN user u ON l.user_id = u.user_id
+        WHERE l.lost_id = #{lostId}
+    </select>
+
+    <select id="selectByUser" resultMap="LostPetResultMap">
+        SELECT l.*, u.username
+        FROM lost_pet l
+        LEFT JOIN user u ON l.user_id = u.user_id
+        WHERE l.user_id = #{userId}
+        ORDER BY l.lost_id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.LostPet"
+            useGeneratedKeys="true" keyProperty="lostId">
+        INSERT INTO lost_pet (
+            user_id, pet_name, species, breed, gender, features, photo,
+            lost_time, lost_location, contact, reward, status, publish_time
+        ) VALUES (
+            #{userId}, #{petName}, #{species}, #{breed}, #{gender}, #{features}, #{photo},
+            #{lostTime}, #{lostLocation}, #{contact}, #{reward}, 1, NOW()
+        )
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE lost_pet SET status = #{status} WHERE lost_id = #{lostId}
+    </update>
+
+</mapper>

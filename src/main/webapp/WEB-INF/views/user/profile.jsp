@@ -81,6 +81,17 @@
                     <a href="${pageContext.request.contextPath}/report/my" class="btn btn-default">我的举报</a>
                 </div>
             </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">我的服务</h3>
+                </div>
+                <div class="panel-body">
+                    <a href="${pageContext.request.contextPath}/appeal/my" class="btn btn-default">我的处罚与申诉</a>
+                    <a href="${pageContext.request.contextPath}/help/response/my" class="btn btn-default">我的求助响应</a>
+                    <a href="${pageContext.request.contextPath}/lost/my" class="btn btn-default">我的寻宠启事</a>
+                    <a href="${pageContext.request.contextPath}/lost/publish" class="btn btn-default">发布寻宠启事</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

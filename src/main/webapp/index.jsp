@@ -20,6 +20,7 @@
             <li><a href="${pageContext.request.contextPath}/knowledge/list">知识科普</a></li>
             <li><a href="${pageContext.request.contextPath}/activity/list">志愿活动</a></li>
             <li><a href="${pageContext.request.contextPath}/help/list">求助中心</a></li>
+            <li><a href="${pageContext.request.contextPath}/lost/list">寻宠启事</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <c:choose>

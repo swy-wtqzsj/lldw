@@ -144,6 +144,15 @@
     <a class="nav-item" href="${pageContext.request.contextPath}/admin/cert/list">
         <i class="fa fa-id-card"></i> 证书管理
     </a>
+    <a class="nav-item" href="${pageContext.request.contextPath}/admin/help-response/list">
+        <i class="fa fa-handshake-o"></i> 求助响应
+    </a>
+    <a class="nav-item" href="${pageContext.request.contextPath}/admin/lost/list">
+        <i class="fa fa-search"></i> 寻宠启事
+    </a>
+    <a class="nav-item" href="${pageContext.request.contextPath}/admin/appeal/list">
+        <i class="fa fa-balance-scale"></i> 处罚申诉
+    </a>
     <hr style="border-color: rgba(255,255,255,0.1); margin: 15px;">
     <a class="nav-item" href="${pageContext.request.contextPath}/">
         <i class="fa fa-home"></i> 返回前台
@@ -229,7 +238,9 @@
                 <p class="text-muted mb-1">待审核求助：${stats.help_pending} 条</p>
                 <p class="text-muted mb-1">待审核退养：${stats.return_pending} 条</p>
                 <p class="text-muted mb-1">待处理举报：${stats.report_pending} 条</p>
-                <p class="text-muted mb-0">待认证证书：${stats.cert_pending} 条</p>
+                <p class="text-muted mb-1">待认证证书：${stats.cert_pending} 条</p>
+                <p class="text-muted mb-1">待审核寻宠：${stats.lost_pending} 条</p>
+                <p class="text-muted mb-0">待复核申诉：${stats.appeal_pending} 条</p>
             </div>
         </div>
     </div>

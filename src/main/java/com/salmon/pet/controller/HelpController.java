@@ -2,9 +2,11 @@ package com.salmon.pet.controller;
 
 import com.salmon.pet.entity.Comment;
 import com.salmon.pet.entity.HelpRequest;
+import com.salmon.pet.entity.HelpResponse;
 import com.salmon.pet.entity.User;
 import com.salmon.pet.service.CommentService;
 import com.salmon.pet.service.HelpRequestService;
+import com.salmon.pet.service.HelpResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,9 @@ public class HelpController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private HelpResponseService helpResponseService;
+
     /**
      * 求助列表页
      */
@@ -44,12 +49,33 @@ public class HelpController {
      * 求助详情页
      */
     @RequestMapping("/detail/{helpId}")
-    public String detail(@PathVariable Integer helpId, Model model) {
+    public String detail(@PathVariable Integer helpId, HttpSession session, Model model) {
         HelpRequest help = helpRequestService.getById(helpId);
         // 查评论（target_type=4 表示求助）
         List<Comment> comments = commentService.getListByTarget(4, helpId);
         model.addAttribute("help", help);
         model.addAttribute("comments", comments);
+
+        // 查响应及当前用户是否可响应
+        List<HelpResponse> responses = helpResponseService.getByHelp(helpId);
+        User loginUser = (User) session.getAttribute("loginUser");
+        boolean responded = false;
+        if (loginUser != null) {
+            for (HelpResponse response : responses) {
+                if (loginUser.getUserId().equals(response.getResponderId())) {
+                    responded = true;
+                    break;
+                }
+            }
+        }
+        boolean canRespond = loginUser != null && help != null
+                && !loginUser.getUserId().equals(help.getUserId())
+                && !responded
+                && help.getAuditStatus() != null && help.getAuditStatus() == 2
+                && (help.getHandleStatus() == null
+                || (help.getHandleStatus() != 4 && help.getHandleStatus() != 5));
+        model.addAttribute("responses", responses);
+        model.addAttribute("canRespond", canRespond);
         return "help/detail";
     }
 

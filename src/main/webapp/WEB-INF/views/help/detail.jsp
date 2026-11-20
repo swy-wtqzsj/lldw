@@ -1,5 +1,6 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,6 +31,51 @@
             </c:if>
 
             <p>${help.content}</p>
+
+            <c:if test="${not empty sessionScope.helpRespMsg}">
+                <div class="alert alert-info">${sessionScope.helpRespMsg}</div>
+                <c:remove var="helpRespMsg" scope="session"/>
+            </c:if>
+
+            <hr>
+
+            <!-- 响应区 -->
+            <h5>求助响应 (${responses.size()})</h5>
+            <c:if test="${canRespond}">
+                <form action="${pageContext.request.contextPath}/help/response/save" method="post" class="mb-3">
+                    <input type="hidden" name="helpId" value="${help.helpId}">
+                    <textarea name="content" class="form-control mb-2" rows="2" maxlength="500"
+                              placeholder="描述你能提供的帮助..." required></textarea>
+                    <button type="submit" class="btn btn-sm btn-primary">提交响应</button>
+                </form>
+            </c:if>
+            <c:choose>
+                <c:when test="${not empty sessionScope.loginUser}">
+                    <c:if test="${not canRespond and sessionScope.loginUser.userId == help.userId}">
+                        <p class="text-muted small">这是你发布的求助，等待他人响应</p>
+                    </c:if>
+                </c:when>
+                <c:otherwise>
+                    <p class="text-muted small">登录后可响应求助</p>
+                </c:otherwise>
+            </c:choose>
+            <c:forEach var="response" items="${responses}">
+                <div class="card mb-2">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between">
+                            <strong>${response.responderName}</strong>
+                            <span class="badge bg-secondary">${response.statusText}</span>
+                        </div>
+                        <p class="mb-1">${response.content}</p>
+                        <small class="text-muted">
+                            <fmt:formatDate value="${response.respTime}" pattern="yyyy-MM-dd HH:mm"/>
+                        </small>
+                    </div>
+                </div>
+            </c:forEach>
+            <c:if test="${empty responses}">
+                <p class="text-muted">暂无响应</p>
+            </c:if>
 
             <hr>
 

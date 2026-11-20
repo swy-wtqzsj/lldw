@@ -25,3 +25,8 @@ logs/
 
 # 运行期上传文件
 src/main/webapp/static/uploads/
+
+# WorkBuddy 项目记忆与工具生成的分享包
+.workbuddy/
+.trae-html-share-packages/
+.screenshots/

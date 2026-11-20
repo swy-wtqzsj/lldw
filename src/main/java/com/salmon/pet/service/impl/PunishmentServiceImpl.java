@@ -23,6 +23,11 @@ public class PunishmentServiceImpl implements PunishmentService {
     }
 
     @Override
+    public Punishment getById(Integer punishId) {
+        return punishmentMapper.selectById(punishId);
+    }
+
+    @Override
     public boolean add(Punishment punishment) {
         return punishmentMapper.insert(punishment) > 0;
     }

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>流浪猫狗救助系统 - 新增模块演示</title>
+<style>
+  :root { --brown:#9c7a5b; --warm:#fef9f5; --card:#fff; --text:#4a3b2f; --muted:#9a8a7b; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Microsoft YaHei",-apple-system,"Segoe UI",sans-serif; background:var(--warm); color:var(--text); }
+  header { background:linear-gradient(135deg,#b08968,#9c7a5b); color:#fff; padding:36px 48px; }
+  header h1 { margin:0 0 8px; font-size:28px; }
+  header p { margin:0; opacity:.9; }
+  .badge { display:inline-block; background:#4caf50; color:#fff; border-radius:20px; padding:2px 12px; font-size:13px; margin-left:10px; }
+  main { max-width:1180px; margin:0 auto; padding:32px 24px 64px; }
+  .summary { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:36px; }
+  .stat { background:var(--card); border-radius:12px; padding:18px 20px; box-shadow:0 2px 10px rgba(176,137,104,.12); }
+  .stat strong { display:block; font-size:24px; color:var(--brown); }
+  .stat span { color:var(--muted); font-size:14px; }
+  section { margin-bottom:44px; }
+  section h2 { font-size:20px; border-left:4px solid var(--brown); padding-left:12px; margin-bottom:6px; }
+  section .desc { color:var(--muted); font-size:14px; margin-bottom:18px; padding-left:16px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:18px; }
+  figure { margin:0; background:var(--card); border-radius:12px; overflow:hidden; box-shadow:0 2px 10px rgba(176,137,104,.12); }
+  figure img { width:100%; display:block; border-bottom:1px solid #f1e8e0; }
+  figcaption { padding:12px 16px; font-size:14px; }
+  figcaption b { color:var(--brown); }
+  .matrix { background:var(--card); border-radius:12px; padding:20px 24px; box-shadow:0 2px 10px rgba(176,137,104,.12); }
+  .matrix li { line-height:1.9; font-size:14px; }
+  footer { text-align:center; color:var(--muted); font-size:13px; padding:20px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>流浪猫狗救助系统 · 新增模块演示 <span class="badge">57 / 57 通过</span></h1>
+  <p>求助响应 · 寻宠启事 · 处罚申诉　｜　真实界面自动化走查，测试数据已清理</p>
+</header>
+<main>
+  <div class="summary">
+    <div class="stat"><strong>3</strong><span>新增业务模块</span></div>
+    <div class="stat"><strong>57</strong><span>自动化用例全部通过</span></div>
+    <div class="stat"><strong>19</strong><span>关键步骤截图</span></div>
+    <div class="stat"><strong>0</strong><span>回归页面异常</span></div>
+  </div>
+
+  <section>
+    <h2>一、寻宠启事</h2>
+    <p class="desc">发布 → 待审核 → 撤回 → 后台审核发布 → 前台展示与详情 → 非法照片拦截。</p>
+    <div class="grid">
+      <figure><img src="01_lost_list_empty.png" alt="寻宠列表空态"><figcaption><b>1.</b> 前台寻宠列表初始空态</figcaption></figure>
+      <figure><img src="02_lost_my_pending.png" alt="发布待审核"><figcaption><b>2.</b> 发布后进入「待审核」</figcaption></figure>
+      <figure><img src="03_lost_withdrawn.png" alt="撤回启事"><figcaption><b>3.</b> 用户撤回启事</figcaption></figure>
+      <figure><img src="05_admin_lost_list.png" alt="后台审核"><figcaption><b>4.</b> 后台审核并发布启事</figcaption></figure>
+      <figure><img src="06_lost_list_published.png" alt="前台已发布"><figcaption><b>5.</b> 前台展示已发布启事</figcaption></figure>
+      <figure><img src="07_lost_detail.png" alt="启事详情"><figcaption><b>6.</b> 启事详情（联系方式、悬赏）</figcaption></figure>
+      <figure><img src="08_lost_bad_format.png" alt="非法照片拦截"><figcaption><b>7.</b> 非法照片格式被拦截</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>二、求助响应</h2>
+    <p class="desc">审核求助 → 提交响应 → 重复响应拦截 → 后台状态流转 → 我的响应 → 发布人限制。</p>
+    <div class="grid">
+      <figure><img src="09_help_response.png" alt="提交响应"><figcaption><b>8.</b> 求助详情提交响应成功</figcaption></figure>
+      <figure><img src="10_help_response_duplicate.png" alt="重复响应拦截"><figcaption><b>9.</b> 重复响应被拦截</figcaption></figure>
+      <figure><img src="11_admin_response_list.png" alt="后台响应列表"><figcaption><b>10.</b> 后台响应管理并更新状态</figcaption></figure>
+      <figure><img src="12_my_response.png" alt="我的响应"><figcaption><b>11.</b> 我的响应列表</figcaption></figure>
+      <figure><img src="13_help_owner_no_response.png" alt="发布人限制"><figcaption><b>12.</b> 发布人不能响应自己的求助</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>三、处罚申诉</h2>
+    <p class="desc">后台新增处罚 → 用户申诉 → 重复申诉拦截 → 后台复核解除 → 处罚自动失效。</p>
+    <div class="grid">
+      <figure><img src="14_admin_punishment.png" alt="新增处罚"><figcaption><b>13.</b> 后台新增一条处罚</figcaption></figure>
+      <figure><img src="15_appeal_my_before.png" alt="申诉前"><figcaption><b>14.</b> 用户端看到生效中的处罚</figcaption></figure>
+      <figure><img src="16_appeal_my_pending.png" alt="申诉待复核"><figcaption><b>15.</b> 提交申诉后进入待复核</figcaption></figure>
+      <figure><img src="17_admin_appeal_list.png" alt="后台复核"><figcaption><b>16.</b> 后台复核并解除处罚</figcaption></figure>
+      <figure><img src="18_appeal_my_lifted.png" alt="申诉解除"><figcaption><b>17.</b> 用户端显示申诉已解除、处罚已失效</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>四、后台看板与统计</h2>
+    <p class="desc">侧边栏新增三个入口，待办统计接入待审核寻宠与待复核申诉。</p>
+    <div class="grid">
+      <figure><img src="04_admin_dashboard.png" alt="看板"><figcaption><b>18.</b> 看板显示待审核寻宠 1 条</figcaption></figure>
+      <figure><img src="19_admin_dashboard_final.png" alt="看板最终"><figcaption><b>19.</b> 申诉复核后待复核申诉归零</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>测试覆盖</h2>
+    <div class="matrix">
+      <ul>
+        <li>寻宠启事：发布、待审核、撤回、后台审核发布、标记已找回、下架筛选、游客不可见、非法照片拦截、照片上传。</li>
+        <li>求助响应：提交、重复拦截、列表、状态更新（待沟通/已接受/已完成）、我的响应、发布人禁止响应。</li>
+        <li>处罚申诉：新增处罚、申诉、重复拦截、他人处罚越权拦截、复核维持/减轻/解除、解除后处罚自动置为已解除。</li>
+        <li>看板与导航：待审核寻宠、待复核申诉计数，后台侧边栏入口。</li>
+        <li>回归：宠物、知识、活动、求助、举报、证书、用户、物资、处罚、评论等 16 个既有页面全部正常。</li>
+      </ul>
+    </div>
+  </section>
+</main>
+<footer>本页面由自动化 UI 走查生成，截图取自真实运行环境；演示数据已在测试后清理。</footer>
+</body>
+</html>

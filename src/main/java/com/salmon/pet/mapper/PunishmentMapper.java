@@ -14,6 +14,9 @@ public interface PunishmentMapper {
     List<Punishment> selectList(@Param("status") Integer status,
                                 @Param("userId") Integer userId);
 
+    /** 查询处罚详情 */
+    Punishment selectById(@Param("punishId") Integer punishId);
+
     /** 新增处罚 */
     int insert(Punishment punishment);
 

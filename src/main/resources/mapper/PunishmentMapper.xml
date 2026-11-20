@@ -33,6 +33,14 @@
         ORDER BY p.punish_id DESC
     </select>
 
+    <select id="selectById" resultMap="PunishmentResultMap">
+        SELECT p.*, u.username, u.nickname, a.username AS admin_name
+        FROM punishment p
+        LEFT JOIN user u ON p.user_id = u.user_id
+        LEFT JOIN user a ON p.admin_id = a.user_id
+        WHERE p.punish_id = #{punishId}
+    </select>
+
     <insert id="insert" parameterType="com.salmon.pet.entity.Punishment"
             useGeneratedKeys="true" keyProperty="punishId">
         INSERT INTO punishment (user_id, type, reason, start_time, end_time, status, admin_id)

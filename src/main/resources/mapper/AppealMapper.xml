@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.AppealMapper">
+
+    <resultMap id="AppealResultMap" type="com.salmon.pet.entity.Appeal">
+        <id property="appealId" column="appeal_id"/>
+        <result property="punishId" column="punish_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="evidence" column="evidence"/>
+        <result property="status" column="status"/>
+        <result property="appealTime" column="appeal_time"/>
+        <result property="reviewAdmin" column="review_admin"/>
+        <result property="reviewOpinion" column="review_opinion"/>
+        <result property="reviewTime" column="review_time"/>
+        <result property="username" column="username"/>
+        <result property="adminName" column="admin_name"/>
+        <result property="punishType" column="punish_type"/>
+        <result property="punishReason" column="punish_reason"/>
+    </resultMap>
+
+    <select id="selectByUser" resultMap="AppealResultMap">
+        SELECT a.*, u.username, ad.username AS admin_name,
+               p.type AS punish_type, p.reason AS punish_reason
+        FROM appeal a
+        LEFT JOIN user u ON a.user_id = u.user_id
+        LEFT JOIN user ad ON a.review_admin = ad.user_id
+        LEFT JOIN punishment p ON a.punish_id = p.punish_id
+        WHERE a.user_id = #{userId}
+        ORDER BY a.appeal_id DESC
+    </select>
+
+    <select id="selectList" resultMap="AppealResultMap">
+        SELECT a.*, u.username, ad.username AS admin_name,
+               p.type AS punish_type, p.reason AS punish_reason
+        FROM appeal a
+        LEFT JOIN user u ON a.user_id = u.user_id
+        LEFT JOIN user ad ON a.review_admin = ad.user_id
+        LEFT JOIN punishment p ON a.punish_id = p.punish_id
+        <where>
+            <if test="status != null">
+                AND a.status = #{status}
+            </if>
+        </where>
+        ORDER BY a.appeal_id DESC
+    </select>
+
+    <select id="selectById" resultMap="AppealResultMap">
+        SELECT a.*, u.username, ad.username AS admin_name,
+               p.type AS punish_type, p.reason AS punish_reason
+        FROM appeal a
+        LEFT JOIN user u ON a.user_id = u.user_id
+        LEFT JOIN user ad ON a.review_admin = ad.user_id
+        LEFT JOIN punishment p ON a.punish_id = p.punish_id
+        WHERE a.appeal_id = #{appealId}
+    </select>
+
+    <select id="countPendingByPunish" resultType="int">
+        SELECT COUNT(*) FROM appeal WHERE punish_id = #{punishId} AND status = 1
+    </select>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.Appeal"
+            useGeneratedKeys="true" keyProperty="appealId">
+        INSERT INTO appeal (punish_id, user_id, content, evidence, status, appeal_time)
+        VALUES (#{punishId}, #{userId}, #{content}, #{evidence}, 1, NOW())
+    </insert>
+
+    <update id="review">
+        UPDATE appeal
+        SET status = #{status},
+            review_admin = #{reviewAdmin},
+            review_opinion = #{reviewOpinion},
+            review_time = NOW()
+        WHERE appeal_id = #{appealId} AND status = 1
+    </update>
+
+</mapper>
