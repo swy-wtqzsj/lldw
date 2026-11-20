@@ -405,6 +405,7 @@ CREATE TABLE problem_feedback (
 CREATE TABLE knowledge_category (
   cat_id        INT          NOT NULL AUTO_INCREMENT COMMENT '分类ID',
   cat_name      VARCHAR(50)  NOT NULL COMMENT '分类名称',
+  icon          VARCHAR(100) DEFAULT NULL COMMENT '分类图标',
   sort_order    INT          DEFAULT 0 COMMENT '排序',
   status        TINYINT      DEFAULT 1 COMMENT '状态:1启用0停用',
   PRIMARY KEY (cat_id)
@@ -419,6 +420,7 @@ CREATE TABLE knowledge (
   title         VARCHAR(100) NOT NULL COMMENT '标题',
   content       TEXT         NOT NULL COMMENT '正文',
   cover         VARCHAR(255) DEFAULT NULL COMMENT '配图',
+  view_count    INT          DEFAULT 0 COMMENT '浏览次数',
   sort_order    INT          DEFAULT 0 COMMENT '排序权重',
   status        TINYINT      DEFAULT 1 COMMENT '状态:1草稿2已发布3已下架',
   author_id     INT          DEFAULT NULL COMMENT '发布管理员ID',
