@@ -116,4 +116,40 @@ public class UserController {
         session.invalidate();
         return "redirect:/login";
     }
+
+    // ========== A组：找回密码 ==========
+    @GetMapping("/forgot")
+    public String forgotPage() {
+        return "user/forgot";
+    }
+
+    @PostMapping("/forgot/reset")
+    public String resetPassword(String username, String email, String newPassword,
+                                String confirmPassword, Model model) {
+        String error = userService.resetPassword(username, email, newPassword, confirmPassword);
+        if (error != null) {
+            model.addAttribute("error", error);
+            model.addAttribute("username", username);
+            model.addAttribute("email", email);
+            return "user/forgot";
+        }
+        model.addAttribute("msg", "密码重置成功，请重新登录");
+        return "redirect:/login";
+    }
+
+    // ========== A组：注销账号 ==========
+    @PostMapping("/profile/cancel")
+    public String cancelAccount(String password, HttpSession session, Model model) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) return "redirect:/login";
+        String error = userService.cancelAccount(loginUser.getUserId(), password);
+        if (error != null) {
+            model.addAttribute("error", error);
+            User dbUser = userService.getById(loginUser.getUserId());
+            model.addAttribute("user", dbUser);
+            return "user/profile";
+        }
+        session.invalidate();
+        return "redirect:/login";
+    }
 }

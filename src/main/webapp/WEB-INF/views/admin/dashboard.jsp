@@ -25,14 +25,18 @@
         <div class="col-sm-2">
             <ul class="list-group">
                 <li class="list-group-item active">数据看板</li>
-                <li class="list-group-item"><a href="#">宠物管理</a></li>
-                <li class="list-group-item"><a href="#">领养审核</a></li>
-                <li class="list-group-item"><a href="#">用户管理</a></li>
-                <li class="list-group-item"><a href="#">求助管理</a></li>
-                <li class="list-group-item"><a href="#">评论管理</a></li>
-                <li class="list-group-item"><a href="#">活动管理</a></li>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/pet/list">宠物管理</a></li>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/pet/adoption_list">领养审核</a></li>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/user/list">用户管理</a></li>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/help/list">求助管理</a></li>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/help/comments">评论管理</a></li>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/activity/list">活动管理</a></li>
+                <%-- A组新增 --%>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/user/admins">管理员管理</a></li>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/volunteer/list">志愿审核</a></li>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/report/list">举报处理</a></li>
+                <li class="list-group-item"><a href="${pageContext.request.contextPath}/admin/punishment/list">处罚管理</a></li>
                 <li class="list-group-item"><a href="#">物资管理</a></li>
-                <li class="list-group-item"><a href="#">处罚管理</a></li>
             </ul>
         </div>
         <div class="col-sm-10">

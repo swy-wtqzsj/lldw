@@ -14,15 +14,19 @@
             <a class="navbar-brand" href="${pageContext.request.contextPath}/">流浪猫狗救助</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">首页</a></li>
-            <li><a href="#">领养中心</a></li>
-            <li><a href="#">知识科普</a></li>
-            <li><a href="#">团队活动</a></li>
-            <li><a href="#">求助中心</a></li>
+            <li class="active"><a href="${pageContext.request.contextPath}/">首页</a></li>
+            <li><a href="${pageContext.request.contextPath}/pet/list">领养中心</a></li>
+            <li><a href="${pageContext.request.contextPath}/knowledge/list">知识科普</a></li>
+            <li><a href="${pageContext.request.contextPath}/activity/list">团队活动</a></li>
+            <li><a href="${pageContext.request.contextPath}/help/list">求助中心</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <c:choose>
                 <c:when test="${not empty sessionScope.loginUser}">
+                    <li><a href="${pageContext.request.contextPath}/message/list">消息<sup style="color:red;">!</sup></a></li>
+                    <li><a href="${pageContext.request.contextPath}/volunteer/apply">志愿认证</a></li>
+                    <li><a href="${pageContext.request.contextPath}/report/submit">举报</a></li>
+                    <li><a href="${pageContext.request.contextPath}/punishment/my">处罚查询</a></li>
                     <li><a href="${pageContext.request.contextPath}/profile">${sessionScope.loginUser.nickname}</a></li>
                     <li><a href="${pageContext.request.contextPath}/logout">退出</a></li>
                 </c:when>
