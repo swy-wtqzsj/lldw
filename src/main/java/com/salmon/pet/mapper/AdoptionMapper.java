@@ -54,4 +54,9 @@ public interface AdoptionMapper {
      * 统计某宠物已通过的领养申请数
      */
     int countApprovedByPet(@Param("petId") Integer petId);
+
+    /**
+     * 退养审核通过后，将对应领养记录置为终止态(4)
+     */
+    int terminateByReturn(@Param("adoptId") Integer adoptId);
 }

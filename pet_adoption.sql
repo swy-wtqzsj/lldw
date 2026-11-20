@@ -121,7 +121,7 @@ CREATE TABLE adoption (
   phone            VARCHAR(11)  NOT NULL COMMENT '联系电话',
   economic_status  VARCHAR(50)  DEFAULT NULL COMMENT '经济状况',
   reason           VARCHAR(500) DEFAULT NULL COMMENT '申请理由',
-  status           TINYINT      DEFAULT 1 COMMENT '状态:1待审核2同意3不同意',
+  status           TINYINT      DEFAULT 1 COMMENT '状态:1待审核2同意3不同意4退养终止',
   apply_time       DATETIME     NOT NULL COMMENT '申请时间',
   audit_opinion    VARCHAR(500) DEFAULT NULL COMMENT '审核意见',
   audit_admin_id   INT          DEFAULT NULL COMMENT '审核管理员ID',

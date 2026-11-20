@@ -30,7 +30,8 @@ public class AdoptionServiceImpl implements AdoptionService {
         if (pet == null) {
             return "宠物不存在";
         }
-        if (pet.getAdoptStatus() != 2) {
+        // 状态2=待领养、5=退养回流，均可申请
+        if (pet.getAdoptStatus() != 2 && pet.getAdoptStatus() != 5) {
             return "该宠物当前不可领养";
         }
 

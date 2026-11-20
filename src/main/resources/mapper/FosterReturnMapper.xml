@@ -56,4 +56,18 @@
         WHERE return_id = #{returnId}
     </update>
 
+    <select id="selectActiveByPet" resultMap="FosterReturnResultMap">
+        SELECT * FROM foster_return
+        WHERE pet_id = #{petId} AND status IN (1, 2)
+        ORDER BY apply_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectByAdoptAndUser" resultMap="FosterReturnResultMap">
+        SELECT * FROM foster_return
+        WHERE adopt_id = #{adoptId} AND user_id = #{userId}
+        ORDER BY apply_time DESC
+        LIMIT 1
+    </select>
+
 </mapper>

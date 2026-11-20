@@ -36,6 +36,7 @@
         <a href="${pageContext.request.contextPath}/admin/pet/adoption_list?status=1" class="btn btn-sm ${status == 1 ? 'btn-warning' : 'btn-outline-warning'}">待审核</a>
         <a href="${pageContext.request.contextPath}/admin/pet/adoption_list?status=2" class="btn btn-sm ${status == 2 ? 'btn-success' : 'btn-outline-success'}">已通过</a>
         <a href="${pageContext.request.contextPath}/admin/pet/adoption_list?status=3" class="btn btn-sm ${status == 3 ? 'btn-danger' : 'btn-outline-danger'}">已拒绝</a>
+        <a href="${pageContext.request.contextPath}/admin/pet/adoption_list?status=4" class="btn btn-sm ${status == 4 ? 'btn-secondary' : 'btn-outline-secondary'}">退养终止</a>
     </div>
 
     <table class="table table-striped">
@@ -65,6 +66,9 @@
                             </c:when>
                             <c:when test="${item.status == 2}">
                                 <span class="badge bg-success">已通过</span>
+                            </c:when>
+                            <c:when test="${item.status == 4}">
+                                <span class="badge bg-secondary">退养终止</span>
                             </c:when>
                             <c:otherwise>
                                 <span class="badge bg-danger">已拒绝</span>

@@ -1,4 +1,5 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,6 +18,10 @@
 <div class="container mt-4">
     <h3>申请退养</h3>
     <p class="text-muted">如果无法继续照顾宠物，可以申请退养，我们会重新为它寻找领养人。</p>
+
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
 
     <form action="${pageContext.request.contextPath}/pet/return_save" method="post">
         <input type="hidden" name="adoptId" value="${adoptId}">

@@ -1,4 +1,5 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,6 +18,10 @@
 <div class="container mt-4">
     <h3>提交回访</h3>
     <p class="text-muted">请定期反馈宠物近况，帮助我们了解它的适应情况。</p>
+
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
 
     <form action="${pageContext.request.contextPath}/pet/revisit_save" method="post">
         <input type="hidden" name="adoptId" value="${adoptId}">

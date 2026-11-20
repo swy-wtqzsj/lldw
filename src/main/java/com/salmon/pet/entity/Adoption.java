@@ -13,7 +13,7 @@ public class Adoption {
     private String phone;           // 联系电话
     private String economicStatus;  // 经济状况
     private String reason;          // 申请理由
-    private Integer status;         // 状态:1待审核2同意3不同意
+    private Integer status;         // 状态:1待审核2同意3不同意4退养终止
     private Date applyTime;         // 申请时间
     private String auditOpinion;     // 审核意见
     private Integer auditAdminId;    // 审核管理员ID
@@ -69,6 +69,7 @@ public class Adoption {
             case 1: return "待审核";
             case 2: return "已通过";
             case 3: return "已拒绝";
+            case 4: return "退养终止";
             default: return "";
         }
     }

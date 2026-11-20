@@ -27,6 +27,10 @@
 <div class="container mt-4">
     <h3>我的领养申请</h3>
 
+    <c:if test="${not empty msg}">
+        <div class="alert alert-success">${msg}</div>
+    </c:if>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -53,6 +57,9 @@
                             </c:when>
                             <c:when test="${item.status == 2}">
                                 <span class="badge bg-success">已通过</span>
+                            </c:when>
+                            <c:when test="${item.status == 4}">
+                                <span class="badge bg-secondary">退养终止</span>
                             </c:when>
                             <c:otherwise>
                                 <span class="badge bg-danger">已拒绝</span>

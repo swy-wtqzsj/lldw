@@ -96,4 +96,13 @@
         SELECT COUNT(*) FROM adoption WHERE pet_id = #{petId} AND status = 2
     </select>
 
+    <!-- 退养审核通过：领养记录置为终止态4 -->
+    <update id="terminateByReturn">
+        UPDATE adoption
+        SET status = 4,
+            audit_opinion = '退养终止',
+            audit_time = NOW()
+        WHERE adopt_id = #{adoptId}
+    </update>
+
 </mapper>

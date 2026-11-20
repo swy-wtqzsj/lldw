@@ -23,10 +23,10 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-    <!-- 前台宠物列表查询（只显示待领养的） -->
+    <!-- 前台宠物列表查询（待领养2 + 退养回流5，均可申请） -->
     <select id="selectPetList" resultMap="PetResultMap">
         SELECT * FROM pet
-        WHERE adopt_status = 2
+        WHERE adopt_status IN (2, 5)
         <if test="species != null">
             AND species = #{species}
         </if>

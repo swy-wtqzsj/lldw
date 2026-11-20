@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,15 +42,22 @@ public class ReturnController {
      * 提交回访
      */
     @RequestMapping("/revisit_save")
-    public String revisitSave(Integer adoptId, String healthDesc, String photo, HttpSession session) {
-        if (session.getAttribute("loginUser") == null) {
+    public String revisitSave(Integer adoptId, String healthDesc, String photo, HttpSession session,
+                              RedirectAttributes redirectAttributes) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
             return "redirect:/login";
         }
         Revisit revisit = new Revisit();
         revisit.setAdoptId(adoptId);
         revisit.setHealthDesc(healthDesc);
         revisit.setPhoto(photo);
-        revisitService.add(revisit);
+        String result = revisitService.add(revisit, loginUser.getUserId());
+        if (!"success".equals(result)) {
+            redirectAttributes.addFlashAttribute("error", result);
+            return "redirect:/pet/revisit_form?adoptId=" + adoptId;
+        }
+        redirectAttributes.addFlashAttribute("msg", "回访提交成功，请等待管理员评估");
         return "redirect:/pet/my";
     }
 
@@ -70,7 +78,8 @@ public class ReturnController {
      * 提交退养申请
      */
     @RequestMapping("/return_save")
-    public String returnSave(Integer adoptId, Integer petId, String reason, String description, String photo, HttpSession session) {
+    public String returnSave(Integer adoptId, Integer petId, String reason, String description, String photo,
+                             HttpSession session, RedirectAttributes redirectAttributes) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -82,7 +91,12 @@ public class ReturnController {
         fr.setReason(reason);
         fr.setDescription(description);
         fr.setPhoto(photo);
-        fosterReturnService.add(fr);
+        String result = fosterReturnService.add(fr);
+        if (!"success".equals(result)) {
+            redirectAttributes.addFlashAttribute("error", result);
+            return "redirect:/pet/return_form?adoptId=" + adoptId + "&petId=" + petId;
+        }
+        redirectAttributes.addFlashAttribute("msg", "退养申请已提交，请等待管理员审核");
         return "redirect:/pet/my_return";
     }
 
