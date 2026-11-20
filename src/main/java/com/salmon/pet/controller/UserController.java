@@ -1,5 +1,6 @@
 package com.salmon.pet.controller;
 
+import com.google.code.kaptcha.Constants;
 import com.salmon.pet.entity.User;
 import com.salmon.pet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +126,17 @@ public class UserController {
 
     @PostMapping("/forgot/reset")
     public String resetPassword(String username, String email, String newPassword,
-                                String confirmPassword, Model model) {
+                                String confirmPassword, String captcha,
+                                HttpSession session, Model model) {
+        // 图形验证码校验：一次性使用，取出后立即销毁，防止重放
+        String expected = (String) session.getAttribute(Constants.KAPTCHA_SESSION_KEY);
+        session.removeAttribute(Constants.KAPTCHA_SESSION_KEY);
+        if (expected == null || captcha == null || !expected.equalsIgnoreCase(captcha.trim())) {
+            model.addAttribute("error", "验证码错误或已失效，请重新输入");
+            model.addAttribute("username", username);
+            model.addAttribute("email", email);
+            return "user/forgot";
+        }
         String error = userService.resetPassword(username, email, newPassword, confirmPassword);
         if (error != null) {
             model.addAttribute("error", error);

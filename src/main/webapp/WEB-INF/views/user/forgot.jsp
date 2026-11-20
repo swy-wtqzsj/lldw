@@ -47,6 +47,18 @@
                             <label>确认新密码</label>
                             <input type="password" name="confirmPassword" class="form-control" required>
                         </div>
+                        <div class="form-group">
+                            <label>验证码</label>
+                            <div class="input-group">
+                                <input type="text" name="captcha" class="form-control" placeholder="请输入右侧验证码" maxlength="4" required>
+                                <span class="input-group-btn">
+                                    <img id="captchaImg" src="${pageContext.request.contextPath}/captcha.jpg"
+                                         alt="点击刷新验证码" title="点击刷新验证码"
+                                         style="height:34px;cursor:pointer;border:1px solid #ccc;border-radius:4px;"
+                                         onclick="this.src='${pageContext.request.contextPath}/captcha.jpg?t='+Date.now();">
+                                </span>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary btn-block">重置密码</button>
                     </form>
                 </div>

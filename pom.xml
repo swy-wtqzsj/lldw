@@ -88,6 +88,13 @@
             <version>2.3.3</version>
             <scope>provided</scope>
         </dependency>
+        <!-- EL API：全局 XSS 转义 ELResolver 编译所需，运行时由 Tomcat 提供 -->
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
