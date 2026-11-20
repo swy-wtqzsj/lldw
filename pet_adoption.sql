@@ -406,6 +406,7 @@ CREATE TABLE knowledge_category (
   cat_id        INT          NOT NULL AUTO_INCREMENT COMMENT '分类ID',
   cat_name      VARCHAR(50)  NOT NULL COMMENT '分类名称',
   sort_order    INT          DEFAULT 0 COMMENT '排序',
+  status        TINYINT      DEFAULT 1 COMMENT '状态:1启用0停用',
   PRIMARY KEY (cat_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='知识分类表';
 

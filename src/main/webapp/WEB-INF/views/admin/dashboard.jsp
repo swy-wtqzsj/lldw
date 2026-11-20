@@ -147,6 +147,9 @@
     <a class="nav-item" href="${pageContext.request.contextPath}/admin/report/list">
         <i class="fa fa-flag"></i> 举报管理
     </a>
+    <a class="nav-item" href="${pageContext.request.contextPath}/admin/report_record/list">
+        <i class="fa fa-flag-o"></i> 举报记录
+    </a>
     <a class="nav-item" href="${pageContext.request.contextPath}/admin/cert/list">
         <i class="fa fa-id-card"></i> 证书管理
     </a>
