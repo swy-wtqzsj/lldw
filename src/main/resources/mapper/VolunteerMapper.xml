@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.VolunteerMapper">
+
+    <resultMap id="volunteerMap" type="com.salmon.pet.entity.Volunteer">
+        <id property="volunteerId" column="volunteer_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="realName" column="real_name"/>
+        <result property="idCard" column="id_card"/>
+        <result property="phone" column="phone"/>
+        <result property="orgName" column="org_name"/>
+        <result property="certType" column="cert_type"/>
+        <result property="certFile" column="cert_file"/>
+        <result property="intro" column="intro"/>
+        <result property="workHours" column="work_hours"/>
+        <result property="points" column="points"/>
+        <result property="level" column="level"/>
+        <result property="auditStatus" column="audit_status"/>
+        <result property="auditOpinion" column="audit_opinion"/>
+        <result property="auditAdminId" column="audit_admin_id"/>
+        <result property="applyTime" column="apply_time"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.Volunteer" useGeneratedKeys="true" keyProperty="volunteerId">
+        INSERT INTO volunteer (user_id, real_name, id_card, phone, org_name, cert_type,
+                               cert_file, intro, audit_status, apply_time)
+        VALUES (#{userId}, #{realName}, #{idCard}, #{phone}, #{orgName}, #{certType},
+                #{certFile}, #{intro}, 1, NOW())
+    </insert>
+
+    <select id="selectByUserId" resultMap="volunteerMap">
+        SELECT * FROM volunteer WHERE user_id = #{userId} ORDER BY volunteer_id DESC LIMIT 1
+    </select>
+
+    <select id="selectById" resultMap="volunteerMap">
+        SELECT * FROM volunteer WHERE volunteer_id = #{volunteerId}
+    </select>
+
+    <select id="selectList" resultMap="volunteerMap">
+        SELECT v.*, u.username, u.nickname
+        FROM volunteer v LEFT JOIN user u ON v.user_id = u.user_id
+        <where>
+            <if test="status != null">
+                AND v.audit_status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (v.real_name LIKE CONCAT('%', #{keyword}, '%')
+                     OR u.username LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY v.apply_time DESC
+    </select>
+
+    <update id="audit">
+        UPDATE volunteer
+        SET audit_status = #{auditStatus},
+            audit_opinion = #{auditOpinion},
+            audit_admin_id = #{auditAdminId},
+            audit_time = NOW()
+        WHERE volunteer_id = #{volunteerId}
+    </update>
+
+    <update id="updateScore">
+        UPDATE volunteer
+        SET work_hours = #{workHours},
+            points = #{points},
+            level = #{level}
+        WHERE volunteer_id = #{volunteerId}
+    </update>
+
+    <select id="countByStatus" resultType="int">
+        SELECT COUNT(*) FROM volunteer WHERE audit_status = #{status}
+    </select>
+
+</mapper>

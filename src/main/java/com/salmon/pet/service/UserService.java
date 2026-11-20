@@ -2,26 +2,27 @@ package com.salmon.pet.service;
 
 import com.salmon.pet.entity.User;
 
+import java.util.List;
+
 public interface UserService {
 
-    /** 注册，返回错误信息；成功返回 null */
     String register(String username, String password, String confirmPassword, String phone);
-
-    /** 登录，返回用户对象；失败返回 null */
     User login(String username, String password);
-
-    /** 根据 ID 查询 */
     User getById(Integer userId);
-
-    /** 更新个人信息 */
     boolean updateInfo(User user);
-
-    /** 修改密码，返回错误信息；成功返回 null */
     String changePassword(Integer userId, String oldPassword, String newPassword, String confirmPassword);
 
-    /** 后台用户列表 */
-    java.util.List<User> getAdminList(String keyword);
-
-    /** 启用/禁用用户 */
+    // 本地第五批
+    List<User> getAdminList(String keyword);
     boolean updateStatus(Integer userId, Integer status);
+
+    // A组
+    String cancelAccount(Integer userId, String password);
+    String resetPassword(String username, String email, String newPassword, String confirmPassword);
+    List<User> listUsers(String keyword, Integer role);
+    boolean adminUpdateUser(Integer userId, Integer role, Integer status, Integer adoptStatus, Integer creditScore);
+    boolean deleteUser(Integer userId);
+    String addAdmin(String username, String password, String nickname, String realName);
+    List<User> listAdmins();
+    int countUsers();
 }

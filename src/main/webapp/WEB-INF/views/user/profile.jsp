@@ -15,6 +15,7 @@
             <a class="navbar-brand" href="${pageContext.request.contextPath}/">流浪猫狗救助</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
+            <li><a href="${pageContext.request.contextPath}/message/list">消息中心</a></li>
             <li><a href="${pageContext.request.contextPath}/profile">个人中心</a></li>
             <li><a href="${pageContext.request.contextPath}/logout">退出</a></li>
         </ul>
@@ -31,6 +32,9 @@
                 <div class="panel-body">
                     <c:if test="${not empty msg}">
                         <div class="alert alert-success">${msg}</div>
+                    </c:if>
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger">${error}</div>
                     </c:if>
                     <form action="${pageContext.request.contextPath}/profile/update" method="post" class="form-horizontal">
                         <div class="form-group">
@@ -78,7 +82,9 @@
                 </div>
                 <div class="panel-body">
                     <a href="${pageContext.request.contextPath}/cert/apply" class="btn btn-primary">认证申请</a>
+                    <a href="${pageContext.request.contextPath}/volunteer/apply" class="btn btn-default">志愿者认证</a>
                     <a href="${pageContext.request.contextPath}/report/my" class="btn btn-default">我的举报</a>
+                    <a href="${pageContext.request.contextPath}/report_record/my" class="btn btn-default">A组举报记录</a>
                 </div>
             </div>
             <div class="panel panel-default">
@@ -87,13 +93,44 @@
                 </div>
                 <div class="panel-body">
                     <a href="${pageContext.request.contextPath}/appeal/my" class="btn btn-default">我的处罚与申诉</a>
+                    <a href="${pageContext.request.contextPath}/punishment/my" class="btn btn-default">A组处罚查询</a>
+                    <a href="${pageContext.request.contextPath}/message/list" class="btn btn-default">我的消息</a>
+                    <a href="${pageContext.request.contextPath}/forgot" class="btn btn-default">找回密码</a>
                     <a href="${pageContext.request.contextPath}/help/response/my" class="btn btn-default">我的求助响应</a>
                     <a href="${pageContext.request.contextPath}/lost/my" class="btn btn-default">我的寻宠启事</a>
                     <a href="${pageContext.request.contextPath}/lost/publish" class="btn btn-default">发布寻宠启事</a>
+                    <button class="btn btn-danger pull-right" data-toggle="modal" data-target="#cancelModal">注销账号</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="cancelModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="${pageContext.request.contextPath}/profile/cancel" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:red;">注销账号</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">注销后账号将被禁用并永久失去领养资格，此操作不可撤销！</div>
+                    <div class="form-group">
+                        <label>请输入密码确认身份</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-danger">确认注销</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

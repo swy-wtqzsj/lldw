@@ -19,6 +19,9 @@
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/list">宠物</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/adoption_list">领养审核</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/user/list">用户</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/user/admins">管理员</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/volunteer/list">志愿审核</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/report_record/list">A组举报</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/list">求助</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/comments">评论</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/activity/list">活动</a></li>
@@ -40,7 +43,7 @@
 
 <div class="container-fluid px-4 mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">处罚管理</h3>
+        <h3 class="mb-0">处罚管理 <c:if test="${appealCount > 0}"><span class="badge bg-warning text-dark">待复核 ${appealCount}</span></c:if></h3>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">新增处罚</button>
     </div>
 
@@ -66,6 +69,7 @@
                 <th>开始时间</th>
                 <th>结束时间</th>
                 <th>状态</th>
+                <th>申诉</th>
                 <th>操作管理员</th>
                 <th>操作</th>
             </tr>
@@ -98,6 +102,14 @@
                     <td>
                         <span class="badge ${item.status == 1 ? 'bg-danger' : (item.status == 2 ? 'bg-success' : 'bg-secondary')}">${item.statusText}</span>
                     </td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${item.appealStatus == 1}"><span class="badge bg-warning text-dark">待复核</span></c:when>
+                            <c:when test="${item.appealStatus == 2}"><span class="badge bg-success">通过</span></c:when>
+                            <c:when test="${item.appealStatus == 3}"><span class="badge bg-info text-dark">驳回</span></c:when>
+                            <c:otherwise><span class="text-muted">未申诉</span></c:otherwise>
+                        </c:choose>
+                    </td>
                     <td>${item.adminName}</td>
                     <td>
                         <c:if test="${item.status == 1}">
@@ -105,13 +117,16 @@
                                 <input type="hidden" name="punishId" value="${item.punishId}">
                                 <button type="submit" class="btn btn-sm btn-outline-success">解除</button>
                             </form>
+                            <c:if test="${item.appealStatus == 1}">
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#appealModal${item.punishId}">复核</button>
+                            </c:if>
                         </c:if>
                     </td>
                 </tr>
             </c:forEach>
             <c:if test="${empty list}">
                 <tr>
-                    <td colspan="9" class="text-center text-muted">暂无处罚记录</td>
+                    <td colspan="10" class="text-center text-muted">暂无处罚记录</td>
                 </tr>
             </c:if>
         </tbody>
@@ -162,6 +177,42 @@
         </div>
     </div>
 </div>
+
+<c:forEach var="item" items="${list}">
+    <c:if test="${item.appealStatus == 1}">
+        <div class="modal fade" id="appealModal${item.punishId}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="${pageContext.request.contextPath}/admin/punishment/appeal" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">复核申诉 #${item.punishId}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><b>申诉理由：</b>${item.appealReason}</p>
+                            <input type="hidden" name="punishId" value="${item.punishId}">
+                            <div class="mb-3">
+                                <label class="form-label">复核结果</label>
+                                <select name="appealStatus" class="form-select">
+                                    <option value="2">通过（解除处罚）</option>
+                                    <option value="3">驳回（维持处罚）</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">复核说明</label>
+                                <textarea name="appealResult" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                            <button type="submit" class="btn btn-primary">提交</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </c:if>
+</c:forEach>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

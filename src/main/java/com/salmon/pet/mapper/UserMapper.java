@@ -3,32 +3,35 @@ package com.salmon.pet.mapper;
 import com.salmon.pet.entity.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
+/**
+ * 用户 Mapper（合并版）
+ */
 public interface UserMapper {
 
-    /** 根据用户名查询用户（登录用） */
     User selectByUsername(@Param("username") String username);
-
-    /** 根据手机号查询 */
     User selectByPhone(@Param("phone") String phone);
-
-    /** 新增用户（注册用） */
     int insert(User user);
-
-    /** 根据 ID 查询 */
     User selectById(@Param("userId") Integer userId);
-
-    /** 更新用户信息 */
     int updateById(User user);
-
-    /** 更新密码 */
     int updatePassword(@Param("userId") Integer userId, @Param("password") String password);
 
-    /** 后台用户列表（按用户名/昵称/手机号搜索） */
-    java.util.List<User> selectAdminList(@Param("keyword") String keyword);
-
-    /** 更新用户状态（启用/禁用） */
+    // 本地第五批
+    List<User> selectAdminList(@Param("keyword") String keyword);
     int updateStatus(@Param("userId") Integer userId, @Param("status") Integer status);
-
-    /** 更新用户角色 */
     int updateRole(@Param("userId") Integer userId, @Param("role") Integer role);
+
+    // A组
+    List<User> selectUserList(@Param("keyword") String keyword, @Param("role") Integer role);
+    User selectByEmail(@Param("email") String email);
+    int updateAdmin(@Param("userId") Integer userId,
+                    @Param("role") Integer role,
+                    @Param("status") Integer status,
+                    @Param("adoptStatus") Integer adoptStatus,
+                    @Param("creditScore") Integer creditScore);
+    int deleteById(@Param("userId") Integer userId);
+    int countUsers();
+    List<User> selectAdmins();
+    int insertAdmin(User user);
 }

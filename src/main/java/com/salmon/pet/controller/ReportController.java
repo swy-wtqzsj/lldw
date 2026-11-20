@@ -3,6 +3,7 @@ package com.salmon.pet.controller;
 import com.salmon.pet.entity.Report;
 import com.salmon.pet.entity.User;
 import com.salmon.pet.service.ReportService;
+import com.salmon.pet.service.PunishReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,9 @@ public class ReportController {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private PunishReportService punishReportService;
 
     /**
      * 举报提交页
@@ -103,6 +107,7 @@ public class ReportController {
             return "redirect:/login";
         }
         model.addAttribute("list", reportService.getMyList(loginUser.getUserId()));
+        model.addAttribute("reports", punishReportService.myReports(loginUser.getUserId()));
         return "report/my_list";
     }
 

@@ -2,6 +2,7 @@ package com.salmon.pet.controller;
 
 import com.salmon.pet.entity.User;
 import com.salmon.pet.service.ReportService;
+import com.salmon.pet.service.PunishReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,9 @@ public class AdminReportController {
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private PunishReportService punishReportService;
+
     /**
      * 举报列表
      */
@@ -28,6 +32,8 @@ public class AdminReportController {
                        @RequestParam(required = false) Integer targetType,
                        Model model) {
         model.addAttribute("list", reportService.getList(status, targetType));
+        model.addAttribute("reports", punishReportService.listReports(status));
+        model.addAttribute("pendingCount", punishReportService.countPendingReports());
         model.addAttribute("status", status);
         model.addAttribute("targetType", targetType);
         return "admin/report_list";

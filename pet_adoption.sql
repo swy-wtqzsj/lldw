@@ -37,6 +37,53 @@ CREATE TABLE user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户信息表';
 
 -- -------------------------------------------------------------
+-- 2a. 志愿者认证表 volunteer (A组)
+-- -------------------------------------------------------------
+CREATE TABLE volunteer (
+  volunteer_id   INT          NOT NULL AUTO_INCREMENT COMMENT '志愿者记录ID',
+  user_id        INT          NOT NULL COMMENT '申请用户ID',
+  real_name      VARCHAR(20)  NOT NULL COMMENT '真实姓名',
+  id_card        VARCHAR(18)  NOT NULL COMMENT '身份证号',
+  phone          VARCHAR(11)  DEFAULT NULL COMMENT '联系电话',
+  org_name       VARCHAR(100) DEFAULT NULL COMMENT '团队/机构名称',
+  cert_type      TINYINT      DEFAULT 1 COMMENT '认证类型:1个人实名2团队/机构',
+  cert_file      VARCHAR(255) DEFAULT NULL COMMENT '资质证明材料路径',
+  intro          VARCHAR(500) DEFAULT NULL COMMENT '个人/团队简介',
+  work_hours     INT          DEFAULT 0 COMMENT '累计服务工时',
+  points         INT          DEFAULT 0 COMMENT '积分',
+  level          INT          DEFAULT 1 COMMENT '等级',
+  audit_status   TINYINT      DEFAULT 1 COMMENT '审核状态:1待审核2已通过3已拒绝',
+  audit_opinion  VARCHAR(255) DEFAULT NULL COMMENT '审核意见',
+  audit_admin_id INT          DEFAULT NULL COMMENT '审核管理员ID',
+  apply_time     DATETIME     NOT NULL COMMENT '申请时间',
+  audit_time     DATETIME     DEFAULT NULL COMMENT '审核时间',
+  PRIMARY KEY (volunteer_id),
+  KEY idx_user_id (user_id),
+  KEY idx_audit_status (audit_status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='志愿者认证表';
+
+-- -------------------------------------------------------------
+-- 2b. 举报记录表 report_record (A组)
+-- -------------------------------------------------------------
+CREATE TABLE report_record (
+  report_id     INT          NOT NULL AUTO_INCREMENT COMMENT '举报ID',
+  reporter_id   INT          NOT NULL COMMENT '举报人ID',
+  target_type   TINYINT      NOT NULL COMMENT '对象类型:1用户2宠物3求助4评论5活动',
+  target_id     INT          NOT NULL COMMENT '被举报对象ID',
+  reason        VARCHAR(255) NOT NULL COMMENT '举报原因',
+  description   VARCHAR(500) DEFAULT NULL COMMENT '详细描述',
+  evidence      VARCHAR(255) DEFAULT NULL COMMENT '证据图片路径',
+  status        TINYINT      DEFAULT 1 COMMENT '处理状态:1待处理2已处理3已驳回',
+  handle_result VARCHAR(255) DEFAULT NULL COMMENT '处理结果说明',
+  admin_id      INT          DEFAULT NULL COMMENT '处理管理员ID',
+  report_time   DATETIME     NOT NULL COMMENT '举报时间',
+  handle_time   DATETIME     DEFAULT NULL COMMENT '处理时间',
+  PRIMARY KEY (report_id),
+  KEY idx_reporter (reporter_id),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='举报记录表';
+
+-- -------------------------------------------------------------
 -- 2. 宠物表 pet
 -- -------------------------------------------------------------
 CREATE TABLE pet (
@@ -247,6 +294,10 @@ CREATE TABLE punishment (
   end_time       DATETIME     DEFAULT NULL COMMENT '结束时间(永久为NULL)',
   status         TINYINT      DEFAULT 1 COMMENT '状态:1生效中2已解除3已到期',
   admin_id       INT          NOT NULL COMMENT '操作管理员ID',
+  appeal_status  TINYINT      DEFAULT 0 COMMENT '申诉状态:0未申诉1待复核2通过3驳回(A组)',
+  appeal_reason  VARCHAR(500) DEFAULT NULL COMMENT '申诉理由(A组)',
+  appeal_time    DATETIME     DEFAULT NULL COMMENT '申诉提交时间(A组)',
+  appeal_result  VARCHAR(255) DEFAULT NULL COMMENT '申诉复核说明(A组)',
   PRIMARY KEY (punish_id),
   KEY idx_user (user_id),
   KEY idx_status (status)

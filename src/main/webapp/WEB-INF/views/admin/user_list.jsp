@@ -18,6 +18,9 @@
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/list">宠物管理</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/adoption_list">领养审核</a></li>
                 <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/admin/user/list">用户管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/user/admins">管理员管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/volunteer/list">志愿审核</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/report_record/list">A组举报</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/list">求助管理</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/activity/list">活动管理</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/knowledge/list">知识管理</a></li>
@@ -34,10 +37,21 @@
         <h3 class="mb-0">用户管理</h3>
         <form action="${pageContext.request.contextPath}/admin/user/list" method="get" class="d-flex gap-2">
             <input type="text" name="keyword" class="form-control" placeholder="用户名/昵称/手机号" value="${keyword}">
+            <select name="role" class="form-select" style="width:auto;">
+                <option value="">全部角色</option>
+                <option value="1" ${role == 1 ? 'selected' : ''}>普通用户</option>
+                <option value="2" ${role == 2 ? 'selected' : ''}>志愿者</option>
+                <option value="3" ${role == 3 ? 'selected' : ''}>管理员</option>
+                <option value="9" ${role == 9 ? 'selected' : ''}>超级管理员</option>
+            </select>
             <button type="submit" class="btn btn-primary">搜索</button>
             <a href="${pageContext.request.contextPath}/admin/user/list" class="btn btn-outline-secondary">重置</a>
         </form>
     </div>
+
+    <c:if test="${not empty param.error}">
+        <div class="alert alert-danger">${param.error}</div>
+    </c:if>
 
     <c:if test="${not empty sessionScope.adminUserMsg}">
         <div class="alert alert-warning">${sessionScope.adminUserMsg}</div>
@@ -95,6 +109,12 @@
                                 </c:otherwise>
                             </c:choose>
                         </form>
+                        <div class="d-flex gap-1 mt-1">
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal${item.userId}">编辑</button>
+                            <c:if test="${item.role != 9}">
+                                <a href="${pageContext.request.contextPath}/admin/user/delete/${item.userId}" class="btn btn-sm btn-outline-danger" onclick="return confirm('确认删除该用户？')">删除</a>
+                            </c:if>
+                        </div>
                     </td>
                 </tr>
             </c:forEach>
@@ -105,6 +125,58 @@
             </c:if>
         </tbody>
     </table>
+
+    <c:forEach var="item" items="${list}">
+        <div class="modal fade" id="editModal${item.userId}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="${pageContext.request.contextPath}/admin/user/update" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">编辑用户：${item.username}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="userId" value="${item.userId}">
+                            <div class="mb-3">
+                                <label class="form-label">角色</label>
+                                <select name="role" class="form-select">
+                                    <option value="1" ${item.role == 1 ? 'selected' : ''}>普通用户</option>
+                                    <option value="2" ${item.role == 2 ? 'selected' : ''}>志愿者</option>
+                                    <option value="3" ${item.role == 3 ? 'selected' : ''}>管理员</option>
+                                    <option value="9" ${item.role == 9 ? 'selected' : ''}>超级管理员</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">状态</label>
+                                <select name="status" class="form-select">
+                                    <option value="1" ${item.status == 1 ? 'selected' : ''}>正常</option>
+                                    <option value="0" ${item.status == 0 ? 'selected' : ''}>禁用</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">领养资格</label>
+                                <select name="adoptStatus" class="form-select">
+                                    <option value="1" ${item.adoptStatus == 1 ? 'selected' : ''}>正常</option>
+                                    <option value="2" ${item.adoptStatus == 2 ? 'selected' : ''}>暂停</option>
+                                    <option value="3" ${item.adoptStatus == 3 ? 'selected' : ''}>永久禁止</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">信用分</label>
+                                <input type="number" name="creditScore" class="form-control" value="${item.creditScore}">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                            <button type="submit" class="btn btn-primary">保存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </c:forEach>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

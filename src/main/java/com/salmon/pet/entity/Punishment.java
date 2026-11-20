@@ -3,24 +3,29 @@ package com.salmon.pet.entity;
 import java.util.Date;
 
 /**
- * 处罚记录实体类
+ * 处罚记录实体（合并版：基础字段 + A组申诉字段）
  */
 public class Punishment {
-    private Integer punishId;        // 处罚ID
-    private Integer userId;          // 被处罚用户ID
-    private Integer type;            // 类型:1警告2禁言3封禁
-    private String reason;           // 处罚原因
-    private Date startTime;          // 开始时间
-    private Date endTime;            // 结束时间(永久为NULL)
-    private Integer status;          // 状态:1生效中2已解除3已到期
-    private Integer adminId;         // 操作管理员ID
+    private Integer punishId;
+    private Integer userId;
+    private Integer type;           // 1警告 2禁言 3封禁
+    private String reason;
+    private Date startTime;
+    private Date endTime;
+    private Integer status;         // 1生效中 2已解除 3已到期
+    private Integer adminId;
 
-    // 关联字段
-    private String username;         // 被处罚用户账号
-    private String nickname;         // 被处罚用户昵称
-    private String adminName;        // 操作管理员账号
+    // A组申诉扩展字段
+    private Integer appealStatus;   // 0未申诉 1待复核 2申诉通过 3申诉驳回
+    private String appealReason;
+    private Date appealTime;
+    private String appealResult;
 
-    // Getter and Setter
+    // 关联查询字段
+    private String username;
+    private String nickname;
+    private String adminName;
+
     public Integer getPunishId() { return punishId; }
     public void setPunishId(Integer punishId) { this.punishId = punishId; }
     public Integer getUserId() { return userId; }
@@ -37,6 +42,14 @@ public class Punishment {
     public void setStatus(Integer status) { this.status = status; }
     public Integer getAdminId() { return adminId; }
     public void setAdminId(Integer adminId) { this.adminId = adminId; }
+    public Integer getAppealStatus() { return appealStatus; }
+    public void setAppealStatus(Integer appealStatus) { this.appealStatus = appealStatus; }
+    public String getAppealReason() { return appealReason; }
+    public void setAppealReason(String appealReason) { this.appealReason = appealReason; }
+    public Date getAppealTime() { return appealTime; }
+    public void setAppealTime(Date appealTime) { this.appealTime = appealTime; }
+    public String getAppealResult() { return appealResult; }
+    public void setAppealResult(String appealResult) { this.appealResult = appealResult; }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getNickname() { return nickname; }
@@ -44,7 +57,6 @@ public class Punishment {
     public String getAdminName() { return adminName; }
     public void setAdminName(String adminName) { this.adminName = adminName; }
 
-    // 辅助方法
     public String getTypeText() {
         if (type == null) return "";
         switch (type) {
@@ -62,6 +74,19 @@ public class Punishment {
             case 2: return "已解除";
             case 3: return "已到期";
             default: return "";
+        }
+    }
+
+    public String getTypeName() { return getTypeText(); }
+    public String getStatusName() { return getStatusText(); }
+
+    public String getAppealStatusName() {
+        if (appealStatus == null || appealStatus == 0) return "未申诉";
+        switch (appealStatus) {
+            case 1: return "待复核";
+            case 2: return "申诉通过";
+            case 3: return "申诉驳回";
+            default: return "未知";
         }
     }
 }

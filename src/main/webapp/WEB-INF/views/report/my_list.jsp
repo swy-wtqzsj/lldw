@@ -16,6 +16,8 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/report/my">我的举报</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/report_record/my">A组举报记录</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/report/submit">提交举报</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/cert/apply">认证申请</a></li>
             </ul>
             <ul class="navbar-nav">
@@ -74,6 +76,44 @@
             <c:if test="${empty list}">
                 <tr>
                     <td colspan="7" class="text-center text-muted">暂无举报记录</td>
+                </tr>
+            </c:if>
+        </tbody>
+    </table>
+
+    <hr class="my-4">
+    <h4 class="mb-3">A组举报记录</h4>
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>举报对象</th>
+                <th>原因</th>
+                <th>状态</th>
+                <th>提交时间</th>
+                <th>处理结果</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach var="r" items="${reports}">
+                <tr>
+                    <td>${r.reportId}</td>
+                    <td>${r.targetTypeName} (#${r.targetId})</td>
+                    <td>${r.reason}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${r.status == 1}"><span class="badge bg-warning text-dark">待处理</span></c:when>
+                            <c:when test="${r.status == 2}"><span class="badge bg-success">已处理</span></c:when>
+                            <c:otherwise><span class="badge bg-secondary">已驳回</span></c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>${r.reportTime}</td>
+                    <td class="text-muted small">${r.handleResult}</td>
+                </tr>
+            </c:forEach>
+            <c:if test="${empty reports}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">暂无 A组举报记录</td>
                 </tr>
             </c:if>
         </tbody>

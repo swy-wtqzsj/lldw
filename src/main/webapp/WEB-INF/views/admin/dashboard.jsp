@@ -114,6 +114,12 @@
     <a class="nav-item" href="${pageContext.request.contextPath}/admin/user/list">
         <i class="fa fa-users"></i> 用户管理
     </a>
+    <a class="nav-item" href="${pageContext.request.contextPath}/admin/user/admins">
+        <i class="fa fa-user-cog"></i> 管理员管理
+    </a>
+    <a class="nav-item" href="${pageContext.request.contextPath}/admin/volunteer/list">
+        <i class="fa fa-heart"></i> 志愿审核
+    </a>
     <a class="nav-item" href="${pageContext.request.contextPath}/admin/pet/revisit_list">
         <i class="fa fa-heart"></i> 回访管理
     </a>

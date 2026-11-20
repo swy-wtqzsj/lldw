@@ -19,6 +19,9 @@
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/list">宠物</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/pet/adoption_list">领养审核</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/user/list">用户</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/user/admins">管理员</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/volunteer/list">志愿审核</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/report_record/list">A组举报</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/list">求助</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/help/comments">评论</a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/activity/list">活动</a></li>
@@ -152,6 +155,95 @@
             </c:if>
         </tbody>
     </table>
+
+    <hr class="my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">A组举报记录 <span class="badge bg-warning text-dark">待处理 ${pendingCount}</span></h4>
+        <a href="${pageContext.request.contextPath}/report/submit" class="btn btn-sm btn-outline-primary">前台提交入口</a>
+    </div>
+
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>举报人</th>
+                <th>对象</th>
+                <th>原因</th>
+                <th>描述</th>
+                <th>时间</th>
+                <th>状态</th>
+                <th>处理信息</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach var="r" items="${reports}">
+                <tr>
+                    <td>${r.reportId}</td>
+                    <td>${r.reporterName}</td>
+                    <td>${r.targetTypeName} (#${r.targetId})</td>
+                    <td>${r.reason}</td>
+                    <td>${r.description}</td>
+                    <td>${r.reportTime}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${r.status == 1}"><span class="badge bg-warning text-dark">待处理</span></c:when>
+                            <c:when test="${r.status == 2}"><span class="badge bg-success">已处理</span></c:when>
+                            <c:otherwise><span class="badge bg-secondary">已驳回</span></c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td class="text-muted small">${r.handleResult}</td>
+                    <td>
+                        <c:if test="${r.status == 1}">
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#recordHandleModal${r.reportId}">处理</button>
+                        </c:if>
+                    </td>
+                </tr>
+            </c:forEach>
+            <c:if test="${empty reports}">
+                <tr>
+                    <td colspan="9" class="text-center text-muted">暂无 A组举报记录</td>
+                </tr>
+            </c:if>
+        </tbody>
+    </table>
+
+    <c:forEach var="r" items="${reports}">
+        <c:if test="${r.status == 1}">
+            <div class="modal fade" id="recordHandleModal${r.reportId}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="${pageContext.request.contextPath}/admin/report_record/handle" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title">处理 A组举报 #${r.reportId}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><b>原因：</b>${r.reason}</p>
+                                <p><b>描述：</b>${r.description}</p>
+                                <input type="hidden" name="reportId" value="${r.reportId}">
+                                <div class="mb-3">
+                                    <label class="form-label">处理结果</label>
+                                    <select name="status" class="form-select">
+                                        <option value="2">已处理（举报属实）</option>
+                                        <option value="3">已驳回（举报不属实）</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">处理说明</label>
+                                    <textarea name="handleResult" class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+    </c:forEach>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

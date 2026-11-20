@@ -19,7 +19,7 @@ public class PunishmentServiceImpl implements PunishmentService {
 
     @Override
     public List<Punishment> getList(Integer status, Integer userId) {
-        return punishmentMapper.selectList(status, userId);
+        return punishmentMapper.selectListByUser(status, userId);
     }
 
     @Override

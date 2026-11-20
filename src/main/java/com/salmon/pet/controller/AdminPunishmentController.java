@@ -3,6 +3,7 @@ package com.salmon.pet.controller;
 import com.salmon.pet.entity.Punishment;
 import com.salmon.pet.entity.User;
 import com.salmon.pet.service.PunishmentService;
+import com.salmon.pet.service.PunishReportService;
 import com.salmon.pet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,9 @@ public class AdminPunishmentController {
     private PunishmentService punishmentService;
 
     @Autowired
+    private PunishReportService punishReportService;
+
+    @Autowired
     private UserService userService;
 
     /**
@@ -35,6 +39,7 @@ public class AdminPunishmentController {
                        @RequestParam(required = false) Integer userId,
                        Model model) {
         model.addAttribute("list", punishmentService.getList(status, userId));
+        model.addAttribute("appealCount", punishReportService.countPendingAppeals());
         model.addAttribute("status", status);
         model.addAttribute("userId", userId);
         model.addAttribute("users", userService.getAdminList(null));
