@@ -16,6 +16,10 @@ public interface MaterialRecordMapper {
     /** 查询最近的出入库流水 */
     List<MaterialRecord> selectRecent(@Param("limit") Integer limit);
 
+    /** 查询某用户的捐赠流水（前台「我的捐赠」） */
+    List<MaterialRecord> selectDonationsByOperator(@Param("operator") String operator,
+                                                   @Param("limit") Integer limit);
+
     /** 新增流水 */
     int insert(MaterialRecord record);
 

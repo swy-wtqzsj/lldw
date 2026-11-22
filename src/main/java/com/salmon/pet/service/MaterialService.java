@@ -36,4 +36,11 @@ public interface MaterialService {
 
     /** 查询最近的流水 */
     List<MaterialRecord> getRecentRecords(Integer limit);
+
+    /** 前台物资捐赠：成功返回 null，失败返回提示语 */
+    String donate(Integer materialId, String name, Integer category, Integer quantity,
+                  String unit, String donor, String operator);
+
+    /** 我的捐赠记录 */
+    List<MaterialRecord> getDonationsByOperator(String operator);
 }

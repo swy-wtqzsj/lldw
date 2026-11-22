@@ -34,6 +34,13 @@ public interface MaterialMapper {
     int decreaseStock(@Param("materialId") Integer materialId,
                       @Param("quantity") Integer quantity);
 
+    /** 按名称精确查询（捐赠时避免重复建物资） */
+    Material selectByName(@Param("name") String name);
+
+    /** 更新最近捐赠人 */
+    int updateDonor(@Param("materialId") Integer materialId,
+                    @Param("donor") String donor);
+
     /** 低库存物资数量 */
     int countLowStock();
 

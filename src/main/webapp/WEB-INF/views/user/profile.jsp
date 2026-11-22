@@ -99,6 +99,8 @@
                     <a href="${pageContext.request.contextPath}/help/response/my" class="btn btn-default">我的求助响应</a>
                     <a href="${pageContext.request.contextPath}/lost/my" class="btn btn-default">我的寻宠启事</a>
                     <a href="${pageContext.request.contextPath}/lost/publish" class="btn btn-default">发布寻宠启事</a>
+                    <a href="${pageContext.request.contextPath}/sign/list" class="btn btn-default">我的签到与工时</a>
+                    <a href="${pageContext.request.contextPath}/material/list" class="btn btn-default">物资捐赠</a>
                     <button class="btn btn-danger pull-right" data-toggle="modal" data-target="#cancelModal">注销账号</button>
                 </div>
             </div>

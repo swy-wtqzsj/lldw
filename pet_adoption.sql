@@ -500,6 +500,32 @@ CREATE TABLE operation_log (
   KEY idx_time (log_time)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员操作日志表';
 
+-- -------------------------------------------------------------
+-- 25. 志愿签到/工时表 volunteer_sign (C组补齐)
+--     约定: 关联用户统一 user_id INT NOT NULL, 表名小写下划线
+--     用途: 志愿签到、签退、工时统计(分工表 PET-2.15 / PET-3.12)
+-- -------------------------------------------------------------
+CREATE TABLE volunteer_sign (
+  sign_id       INT           NOT NULL AUTO_INCREMENT COMMENT '签到记录ID',
+  user_id       INT           NOT NULL COMMENT '志愿者用户ID',
+  activity_id   INT           DEFAULT NULL COMMENT '关联活动ID(日常服务可为空)',
+  sign_date     DATE          NOT NULL COMMENT '服务日期',
+  sign_in_time  DATETIME      NOT NULL COMMENT '签到时间',
+  sign_out_time DATETIME      DEFAULT NULL COMMENT '签退时间',
+  work_hours    DECIMAL(4,1)  DEFAULT 0 COMMENT '本次服务工时(小时)',
+  service_type  TINYINT       DEFAULT 1 COMMENT '服务类型:1活动服务2日常照护3物资整理4其他',
+  content       VARCHAR(255)  DEFAULT NULL COMMENT '服务内容说明',
+  status        TINYINT       DEFAULT 1 COMMENT '状态:1已签到2已签退3已作废',
+  audit_status  TINYINT       DEFAULT 1 COMMENT '工时审核:1待审核2已通过3已驳回',
+  audit_remark  VARCHAR(255)  DEFAULT NULL COMMENT '审核意见',
+  create_time   DATETIME      NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (sign_id),
+  KEY idx_user (user_id),
+  KEY idx_activity (activity_id),
+  KEY idx_date (sign_date),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='志愿签到与工时记录表(C组)';
+
 -- =============================================================
 -- 初始化数据
 -- =============================================================
@@ -519,6 +545,18 @@ VALUES ('testuser', 'e10adc3949ba59abbe56e057f20f883e', '测试用户', 1, 1, NO
 -- 知识分类
 INSERT INTO knowledge_category (cat_name, sort_order) VALUES
 ('健康关怀', 1), ('美容护理', 2), ('喂养食物', 3), ('行为心理', 4);
+
+-- C组志愿签到示例数据(工时统计看板初始可见, 可自行清理)
+INSERT INTO volunteer_sign
+  (user_id, activity_id, sign_date, sign_in_time, sign_out_time, work_hours,
+   service_type, content, status, audit_status, create_time)
+VALUES
+  (3, NULL, CURDATE(), DATE_SUB(NOW(), INTERVAL 5 HOUR), DATE_SUB(NOW(), INTERVAL 2 HOUR), 3.0,
+   2, '流浪猫日常喂养与笼舍清洁', 2, 2, DATE_SUB(NOW(), INTERVAL 5 HOUR)),
+  (3, NULL, DATE_SUB(CURDATE(), INTERVAL 3 DAY),
+   DATE_SUB(DATE_SUB(NOW(), INTERVAL 3 DAY), INTERVAL 3 HOUR),
+   DATE_SUB(NOW(), INTERVAL 3 DAY), 2.5,
+   3, '捐赠物资整理入库', 2, 2, DATE_SUB(NOW(), INTERVAL 3 DAY));
 
 -- 示例宠物
 INSERT INTO pet (pet_no, pet_name, species, breed, gender, age_stage, description, adopt_status, is_neutered, is_vaccinated, health_status, create_time, update_time)
