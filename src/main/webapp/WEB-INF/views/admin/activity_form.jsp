@@ -24,6 +24,10 @@
 <div class="container mt-4" style="max-width: 760px;">
     <h3 class="mb-3">${empty activity ? '新增活动' : '编辑活动'}</h3>
 
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
+
     <c:if test="${not empty activity}">
         <fmt:formatDate var="startVal" value="${activity.startTime}" pattern="yyyy-MM-dd'T'HH:mm"/>
         <fmt:formatDate var="endVal" value="${activity.endTime}" pattern="yyyy-MM-dd'T'HH:mm"/>

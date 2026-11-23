@@ -3,6 +3,8 @@ package com.salmon.pet.controller;
 import com.salmon.pet.entity.Material;
 import com.salmon.pet.entity.User;
 import com.salmon.pet.service.MaterialService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * 后台物资管理控制器
@@ -22,13 +25,18 @@ public class AdminMaterialController {
     private MaterialService materialService;
 
     /**
-     * 物资列表
+     * 物资列表（分页 + 类别/关键字筛选）
      */
     @RequestMapping("/list")
     public String list(@RequestParam(required = false) Integer category,
                        @RequestParam(required = false) String keyword,
+                       @RequestParam(defaultValue = "1") Integer pageNum,
                        Model model) {
-        model.addAttribute("list", materialService.getList(category, keyword));
+        PageHelper.startPage(pageNum, 10);
+        List<Material> list = materialService.getList(category, keyword);
+        PageInfo<Material> pageInfo = new PageInfo<>(list);
+        model.addAttribute("list", list);
+        model.addAttribute("pageInfo", pageInfo);
         model.addAttribute("category", category);
         model.addAttribute("keyword", keyword);
         return "admin/material_list";

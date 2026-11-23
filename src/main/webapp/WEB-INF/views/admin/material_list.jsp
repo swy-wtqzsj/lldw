@@ -174,6 +174,40 @@
             </c:if>
         </tbody>
     </table>
+
+    <c:if test="${pageInfo.pages > 1}">
+        <nav aria-label="分页">
+            <ul class="pagination justify-content-center">
+                <c:url var="prevUrl" value="/admin/material/list">
+                    <c:if test="${not empty category}"><c:param name="category" value="${category}"/></c:if>
+                    <c:if test="${not empty keyword}"><c:param name="keyword" value="${keyword}"/></c:if>
+                    <c:param name="pageNum" value="${pageInfo.pageNum - 1}"/>
+                </c:url>
+                <li class="page-item ${pageInfo.pageNum <= 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="${prevUrl}">上一页</a>
+                </li>
+                <c:forEach begin="1" end="${pageInfo.pages}" var="i">
+                    <c:url var="pageUrl" value="/admin/material/list">
+                        <c:if test="${not empty category}"><c:param name="category" value="${category}"/></c:if>
+                        <c:if test="${not empty keyword}"><c:param name="keyword" value="${keyword}"/></c:if>
+                        <c:param name="pageNum" value="${i}"/>
+                    </c:url>
+                    <li class="page-item ${pageInfo.pageNum == i ? 'active' : ''}">
+                        <a class="page-link" href="${pageUrl}">${i}</a>
+                    </li>
+                </c:forEach>
+                <c:url var="nextUrl" value="/admin/material/list">
+                    <c:if test="${not empty category}"><c:param name="category" value="${category}"/></c:if>
+                    <c:if test="${not empty keyword}"><c:param name="keyword" value="${keyword}"/></c:if>
+                    <c:param name="pageNum" value="${pageInfo.pageNum + 1}"/>
+                </c:url>
+                <li class="page-item ${pageInfo.pageNum >= pageInfo.pages ? 'disabled' : ''}">
+                    <a class="page-link" href="${nextUrl}">下一页</a>
+                </li>
+            </ul>
+        </nav>
+        <p class="text-center text-muted small">共 ${pageInfo.total} 条物资，第 ${pageInfo.pageNum}/${pageInfo.pages} 页</p>
+    </c:if>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

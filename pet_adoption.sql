@@ -533,16 +533,17 @@ CREATE TABLE volunteer_sign (
 -- =============================================================
 
 -- 默认 root 管理员 (初始密码: admin123; 下方为旧MD5值, 首次登录成功后自动升级为PBKDF2加盐哈希)
-INSERT INTO user (username, password, nickname, role, status, register_time)
-VALUES ('admin', '0192023a7bbd73250516f069df18b500', '超级管理员', 9, 1, NOW());
+-- email 为找回密码功能的绑定邮箱, 缺失则该账号无法使用找回密码
+INSERT INTO user (username, password, nickname, email, role, status, register_time)
+VALUES ('admin', '0192023a7bbd73250516f069df18b500', '超级管理员', 'admin@pet-adoption.local', 9, 1, NOW());
 
 -- 普通管理员 (初始密码: 123456; 旧MD5值, 首次登录自动升级)
-INSERT INTO user (username, password, nickname, role, status, register_time)
-VALUES ('manager', 'e10adc3949ba59abbe56e057f20f883e', '平台管理员', 3, 1, NOW());
+INSERT INTO user (username, password, nickname, email, role, status, register_time)
+VALUES ('manager', 'e10adc3949ba59abbe56e057f20f883e', '平台管理员', 'manager@pet-adoption.local', 3, 1, NOW());
 
 -- 测试普通用户 (初始密码: 123456; 旧MD5值, 首次登录自动升级)
-INSERT INTO user (username, password, nickname, role, status, register_time)
-VALUES ('testuser', 'e10adc3949ba59abbe56e057f20f883e', '测试用户', 1, 1, NOW());
+INSERT INTO user (username, password, nickname, email, role, status, register_time)
+VALUES ('testuser', 'e10adc3949ba59abbe56e057f20f883e', '测试用户', 'testuser@pet-adoption.local', 1, 1, NOW());
 
 -- 知识分类
 INSERT INTO knowledge_category (cat_name, sort_order) VALUES

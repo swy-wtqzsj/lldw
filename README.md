@@ -85,15 +85,15 @@ LIB_DIR=/path/to/WEB-INF/lib ./build-local.sh
 
 ## 测试账号
 
-| 账号 | 密码 | 角色 |
-|------|------|------|
-| admin | admin123 | 超级管理员 |
-| manager | 123456 | 平台管理员 |
-| testuser | 123456 | 普通用户 |
+| 账号 | 密码 | 角色 | 绑定邮箱 |
+|------|------|------|----------|
+| admin | admin123 | 超级管理员 | admin@pet-adoption.local |
+| manager | 123456 | 平台管理员 | manager@pet-adoption.local |
+| testuser | 123456 | 普通用户 | testuser@pet-adoption.local |
 
-> 注意：A 组《给BC组的协作注意事项》§6 写的是 `admin / 123456`，与合并后的 SQL 初始化数据不一致
-> （SQL 中 admin 的密码为 `admin123` 的 MD5）。按当前脚本请用 `admin / admin123`；
-> `manager / 123456` 同样是管理员（role=3），可直接登录后台。
+> 初始化脚本中的密码为旧版 MD5，首次登录成功后自动升级为 PBKDF2 加盐哈希。
+> 三个演示账号均已绑定邮箱，可直接走「找回密码」流程；自行注册的账号需先在个人中心绑定邮箱。
+> 部署到公网前请务必修改这些初始口令。
 
 ## 项目结构
 

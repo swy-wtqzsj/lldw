@@ -1,15 +1,20 @@
 package com.salmon.pet.controller;
 
 import com.salmon.pet.entity.User;
+import com.salmon.pet.entity.VolunteerSign;
 import com.salmon.pet.service.ActivityService;
 import com.salmon.pet.service.VolunteerSignService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * 前台志愿签到控制器（C 组）
@@ -25,14 +30,18 @@ public class VolunteerSignController {
     @Autowired
     private ActivityService activityService;
 
-    /** 我的签到与工时 */
+    /** 我的签到与工时（分页） */
     @RequestMapping("/list")
-    public String list(HttpSession session, Model model) {
+    public String list(@RequestParam(defaultValue = "1") Integer pageNum,
+                       HttpSession session, Model model) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
         }
-        model.addAttribute("list", volunteerSignService.getMyList(loginUser.getUserId()));
+        PageHelper.startPage(pageNum, 10);
+        List<VolunteerSign> list = volunteerSignService.getMyList(loginUser.getUserId());
+        model.addAttribute("list", list);
+        model.addAttribute("pageInfo", new PageInfo<>(list));
         model.addAttribute("myStats", volunteerSignService.getMyStats(loginUser.getUserId()));
         model.addAttribute("activities", activityService.getPublicList());
         return "sign/list";

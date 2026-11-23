@@ -116,6 +116,46 @@
             </tbody>
         </table>
     </div>
+
+    <c:if test="${pageInfo.pages > 1}">
+        <nav aria-label="分页">
+            <ul class="pagination justify-content-center">
+                <c:url var="prevUrl" value="/admin/sign/list">
+                    <c:if test="${not empty userId}"><c:param name="userId" value="${userId}"/></c:if>
+                    <c:if test="${not empty status}"><c:param name="status" value="${status}"/></c:if>
+                    <c:if test="${not empty auditStatus}"><c:param name="auditStatus" value="${auditStatus}"/></c:if>
+                    <c:if test="${not empty keyword}"><c:param name="keyword" value="${keyword}"/></c:if>
+                    <c:param name="pageNum" value="${pageInfo.pageNum - 1}"/>
+                </c:url>
+                <li class="page-item ${pageInfo.pageNum <= 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="${prevUrl}">上一页</a>
+                </li>
+                <c:forEach begin="1" end="${pageInfo.pages}" var="i">
+                    <c:url var="pageUrl" value="/admin/sign/list">
+                        <c:if test="${not empty userId}"><c:param name="userId" value="${userId}"/></c:if>
+                        <c:if test="${not empty status}"><c:param name="status" value="${status}"/></c:if>
+                        <c:if test="${not empty auditStatus}"><c:param name="auditStatus" value="${auditStatus}"/></c:if>
+                        <c:if test="${not empty keyword}"><c:param name="keyword" value="${keyword}"/></c:if>
+                        <c:param name="pageNum" value="${i}"/>
+                    </c:url>
+                    <li class="page-item ${pageInfo.pageNum == i ? 'active' : ''}">
+                        <a class="page-link" href="${pageUrl}">${i}</a>
+                    </li>
+                </c:forEach>
+                <c:url var="nextUrl" value="/admin/sign/list">
+                    <c:if test="${not empty userId}"><c:param name="userId" value="${userId}"/></c:if>
+                    <c:if test="${not empty status}"><c:param name="status" value="${status}"/></c:if>
+                    <c:if test="${not empty auditStatus}"><c:param name="auditStatus" value="${auditStatus}"/></c:if>
+                    <c:if test="${not empty keyword}"><c:param name="keyword" value="${keyword}"/></c:if>
+                    <c:param name="pageNum" value="${pageInfo.pageNum + 1}"/>
+                </c:url>
+                <li class="page-item ${pageInfo.pageNum >= pageInfo.pages ? 'disabled' : ''}">
+                    <a class="page-link" href="${nextUrl}">下一页</a>
+                </li>
+            </ul>
+        </nav>
+        <p class="text-center text-muted small">共 ${pageInfo.total} 条签到记录，第 ${pageInfo.pageNum}/${pageInfo.pages} 页</p>
+    </c:if>
 </div>
 </body>
 </html>

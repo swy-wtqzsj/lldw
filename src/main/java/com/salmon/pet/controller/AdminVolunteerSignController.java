@@ -1,6 +1,9 @@
 package com.salmon.pet.controller;
 
+import com.salmon.pet.entity.VolunteerSign;
 import com.salmon.pet.service.VolunteerSignService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * 后台志愿签到 / 工时统计控制器（C 组）
@@ -21,15 +25,20 @@ public class AdminVolunteerSignController {
     @Autowired
     private VolunteerSignService volunteerSignService;
 
-    /** 签到记录列表 */
+    /** 签到记录列表（分页 + 多条件筛选） */
     @RequestMapping("/list")
     public String list(@RequestParam(required = false) Integer userId,
                        @RequestParam(required = false) Integer status,
                        @RequestParam(required = false) Integer auditStatus,
                        @RequestParam(required = false) String keyword,
+                       @RequestParam(defaultValue = "1") Integer pageNum,
                        Model model) {
-        model.addAttribute("list", volunteerSignService.getAdminList(userId, status,
-                auditStatus, keyword));
+        PageHelper.startPage(pageNum, 15);
+        List<VolunteerSign> list = volunteerSignService.getAdminList(userId, status,
+                auditStatus, keyword);
+        PageInfo<VolunteerSign> pageInfo = new PageInfo<>(list);
+        model.addAttribute("list", list);
+        model.addAttribute("pageInfo", pageInfo);
         model.addAttribute("userId", userId);
         model.addAttribute("status", status);
         model.addAttribute("auditStatus", auditStatus);

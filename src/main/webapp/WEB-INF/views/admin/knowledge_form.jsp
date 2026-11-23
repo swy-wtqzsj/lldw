@@ -23,6 +23,10 @@
 <div class="container mt-4" style="max-width: 820px;">
     <h3 class="mb-3">${empty knowledge ? '新增文章' : '编辑文章'}</h3>
 
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
+
     <form action="${pageContext.request.contextPath}/admin/knowledge/save" method="post">
         <c:if test="${not empty knowledge}">
             <input type="hidden" name="articleId" value="${knowledge.articleId}">

@@ -10,6 +10,7 @@
         case 400: title = "请求有误"; desc = "请求参数不正确，请检查后重试。"; break;
         case 403: title = "禁止访问"; desc = "您没有权限访问该资源。"; break;
         case 404: title = "页面不存在"; desc = "您访问的页面不存在或已被移除。"; break;
+        case 405: title = "请求方式不支持"; desc = "该操作不支持当前请求方式，请通过页面按钮重新操作。"; break;
         default:  title = "系统繁忙"; desc = "服务暂时不可用，请稍后再试。";
     }
     pageContext.setAttribute("errStatus", status);
