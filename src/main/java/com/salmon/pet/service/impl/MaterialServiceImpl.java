@@ -125,26 +125,48 @@ public class MaterialServiceImpl implements MaterialService {
         if (quantity == null || quantity <= 0) {
             return "捐赠数量必须大于 0";
         }
+        if (quantity > 1000000) {
+            return "单次捐赠数量过大，请分批提交";
+        }
         if (donor == null || donor.trim().isEmpty()) {
             donor = "爱心人士";
         }
+        donor = donor.trim();
+        if (donor.length() > 50) {
+            donor = donor.substring(0, 50);
+        }
         if (operator == null || operator.trim().isEmpty()) {
             operator = donor;
+        }
+        operator = operator.trim();
+        // material_record.operator 为 VARCHAR(20)，超长截断避免插入异常
+        if (operator.length() > 20) {
+            operator = operator.substring(0, 20);
         }
 
         if (materialId == null) {
             if (name == null || name.trim().isEmpty()) {
                 return "请选择已有物资，或填写新物资名称";
             }
-            Material exist = materialMapper.selectByName(name.trim());
+            String trimmedName = name.trim();
+            // material.name 为 VARCHAR(50)，超长时直接拒绝，避免 MySQL Data too long 500
+            if (trimmedName.length() > 50) {
+                return "物资名称不能超过 50 个字符";
+            }
+            String trimmedUnit = unit == null || unit.trim().isEmpty() ? "件" : unit.trim();
+            // material.unit 为 VARCHAR(10)
+            if (trimmedUnit.length() > 10) {
+                return "计量单位不能超过 10 个字符";
+            }
+            Material exist = materialMapper.selectByName(trimmedName);
             if (exist != null) {
                 materialId = exist.getMaterialId();
             } else {
                 Material m = new Material();
-                m.setName(name.trim());
+                m.setName(trimmedName);
                 m.setCategory(category == null || category < 1 || category > 3 ? 3 : category);
                 m.setQuantity(quantity);
-                m.setUnit(unit == null || unit.trim().isEmpty() ? "件" : unit.trim());
+                m.setUnit(trimmedUnit);
                 m.setWarnThreshold(5);
                 m.setDonor(donor);
                 if (materialMapper.insert(m) <= 0 || m.getMaterialId() == null) {

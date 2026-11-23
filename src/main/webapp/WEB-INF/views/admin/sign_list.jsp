@@ -93,7 +93,7 @@
                         <c:if test="${not empty s.auditRemark}"><br><small class="text-muted">${s.auditRemark}</small></c:if>
                     </td>
                     <td>
-                        <c:if test="${s.status == 2}">
+                        <c:if test="${s.status == 2 and s.auditStatus == 1}">
                             <form action="${pageContext.request.contextPath}/admin/sign/audit" method="post" class="d-inline">
                                 <input type="hidden" name="signId" value="${s.signId}">
                                 <input type="hidden" name="auditStatus" value="2">

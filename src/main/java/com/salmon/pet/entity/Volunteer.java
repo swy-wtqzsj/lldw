@@ -1,5 +1,6 @@
 package com.salmon.pet.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -16,7 +17,7 @@ public class Volunteer {
     private Integer certType;       // 1个人实名 2团队/机构
     private String certFile;
     private String intro;
-    private Integer workHours;
+    private BigDecimal workHours;   // 累计服务工时, DECIMAL(6,1) 保留1位小数
     private Integer points;
     private Integer level;
     private Integer auditStatus;    // 1待审核 2已通过 3已拒绝
@@ -47,8 +48,8 @@ public class Volunteer {
     public void setCertFile(String certFile) { this.certFile = certFile; }
     public String getIntro() { return intro; }
     public void setIntro(String intro) { this.intro = intro; }
-    public Integer getWorkHours() { return workHours; }
-    public void setWorkHours(Integer workHours) { this.workHours = workHours; }
+    public BigDecimal getWorkHours() { return workHours; }
+    public void setWorkHours(BigDecimal workHours) { this.workHours = workHours; }
     public Integer getPoints() { return points; }
     public void setPoints(Integer points) { this.points = points; }
     public Integer getLevel() { return level; }

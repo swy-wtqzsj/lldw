@@ -43,8 +43,8 @@ public class AdminVolunteerSignController {
                         @RequestParam Integer auditStatus,
                         @RequestParam(required = false) String auditRemark,
                         HttpSession session) {
-        boolean ok = volunteerSignService.audit(signId, auditStatus, auditRemark);
-        session.setAttribute("adminSignMsg", ok ? "工时审核已提交" : "审核失败，记录不存在");
+        String msg = volunteerSignService.audit(signId, auditStatus, auditRemark);
+        session.setAttribute("adminSignMsg", msg == null ? "工时审核已提交" : msg);
         return "redirect:/admin/sign/list";
     }
 

@@ -26,8 +26,12 @@ public interface VolunteerSignService {
     List<VolunteerSign> getAdminList(Integer userId, Integer status,
                                      Integer auditStatus, String keyword);
 
-    /** 工时审核：1 待审核 2 通过 3 驳回 */
-    boolean audit(Integer signId, Integer auditStatus, String auditRemark);
+    /**
+     * 工时审核：auditStatus 2 通过 / 3 驳回。
+     * 仅"已签退(status=2)且待审核(audit_status=1)"的记录可审核。
+     * @return null 表示成功；非 null 为失败原因或提示信息
+     */
+    String audit(Integer signId, Integer auditStatus, String auditRemark);
 
     /** 工时排行 */
     List<Map<String, Object>> getWorkHourRank();

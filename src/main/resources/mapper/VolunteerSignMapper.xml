@@ -89,6 +89,8 @@
         SET audit_status = #{auditStatus},
             audit_remark = #{auditRemark}
         WHERE sign_id = #{signId}
+          AND status = 2
+          AND audit_status = 1
     </update>
 
     <select id="selectWorkHourRank" resultType="map">

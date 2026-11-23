@@ -49,7 +49,7 @@ CREATE TABLE volunteer (
   cert_type      TINYINT      DEFAULT 1 COMMENT '认证类型:1个人实名2团队/机构',
   cert_file      VARCHAR(255) DEFAULT NULL COMMENT '资质证明材料路径',
   intro          VARCHAR(500) DEFAULT NULL COMMENT '个人/团队简介',
-  work_hours     INT          DEFAULT 0 COMMENT '累计服务工时',
+  work_hours     DECIMAL(6,1) DEFAULT 0 COMMENT '累计服务工时(小时,保留1位小数)',
   points         INT          DEFAULT 0 COMMENT '积分',
   level          INT          DEFAULT 1 COMMENT '等级',
   audit_status   TINYINT      DEFAULT 1 COMMENT '审核状态:1待审核2已通过3已拒绝',
@@ -516,10 +516,12 @@ CREATE TABLE volunteer_sign (
   service_type  TINYINT       DEFAULT 1 COMMENT '服务类型:1活动服务2日常照护3物资整理4其他',
   content       VARCHAR(255)  DEFAULT NULL COMMENT '服务内容说明',
   status        TINYINT       DEFAULT 1 COMMENT '状态:1已签到2已签退3已作废',
+  open_flag     TINYINT       GENERATED ALWAYS AS (IF(status = 1, 1, NULL)) STORED COMMENT '未签退标记(仅status=1时为1,用于唯一约束)',
   audit_status  TINYINT       DEFAULT 1 COMMENT '工时审核:1待审核2已通过3已驳回',
   audit_remark  VARCHAR(255)  DEFAULT NULL COMMENT '审核意见',
   create_time   DATETIME      NOT NULL COMMENT '创建时间',
   PRIMARY KEY (sign_id),
+  UNIQUE KEY uk_user_open (user_id, open_flag),
   KEY idx_user (user_id),
   KEY idx_activity (activity_id),
   KEY idx_date (sign_date),
@@ -557,6 +559,14 @@ VALUES
    DATE_SUB(DATE_SUB(NOW(), INTERVAL 3 DAY), INTERVAL 3 HOUR),
    DATE_SUB(NOW(), INTERVAL 3 DAY), 2.5,
    3, '捐赠物资整理入库', 2, 2, DATE_SUB(NOW(), INTERVAL 3 DAY));
+
+-- 物资初始库存 (便于捐赠页选择已有物资, 可自行增删)
+INSERT INTO material (name, category, quantity, unit, warn_threshold, donor, create_time, update_time)
+VALUES
+('猫粮',       1, 20, '袋', 5,  '系统', NOW(), NOW()),
+('狗粮',       1, 15, '袋', 5,  '系统', NOW(), NOW()),
+('宠物消毒液', 2, 8,  '瓶', 3,  '系统', NOW(), NOW()),
+('宠物尿垫',   3, 30, '包', 10, '系统', NOW(), NOW());
 
 -- 示例宠物
 INSERT INTO pet (pet_no, pet_name, species, breed, gender, age_stage, description, adopt_status, is_neutered, is_vaccinated, health_status, create_time, update_time)
