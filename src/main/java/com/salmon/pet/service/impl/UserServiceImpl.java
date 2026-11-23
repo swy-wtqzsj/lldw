@@ -3,7 +3,7 @@ package com.salmon.pet.service.impl;
 import com.salmon.pet.entity.User;
 import com.salmon.pet.mapper.UserMapper;
 import com.salmon.pet.service.UserService;
-import com.salmon.pet.utils.MD5Utils;
+import com.salmon.pet.utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(MD5Utils.md5(password));
+        user.setPassword(PasswordUtils.encode(password));
         user.setPhone(phone);
         user.setNickname(username);
         user.setRole(1);
@@ -52,11 +52,17 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return null;
         }
-        if (!user.getPassword().equals(MD5Utils.md5(password))) {
+        if (!PasswordUtils.matches(password, user.getPassword())) {
             return null;
         }
         if (user.getStatus() == 0) {
             return null;
+        }
+        // 平滑迁移：旧版无盐 MD5 校验通过后自动升级为 PBKDF2 加盐哈希
+        if (PasswordUtils.needsUpgrade(user.getPassword())) {
+            String newHash = PasswordUtils.encode(password);
+            userMapper.updatePassword(user.getUserId(), newHash);
+            user.setPassword(newHash);
         }
         return user;
     }
@@ -77,7 +83,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return "用户不存在";
         }
-        if (!user.getPassword().equals(MD5Utils.md5(oldPassword))) {
+        if (!PasswordUtils.matches(oldPassword, user.getPassword())) {
             return "原密码错误";
         }
         if (!newPassword.equals(confirmPassword)) {
@@ -86,7 +92,7 @@ public class UserServiceImpl implements UserService {
         if (newPassword.length() < 6 || newPassword.length() > 20) {
             return "新密码长度需6-20位";
         }
-        userMapper.updatePassword(userId, MD5Utils.md5(newPassword));
+        userMapper.updatePassword(userId, PasswordUtils.encode(newPassword));
         return null;
     }
 
@@ -113,7 +119,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return "用户不存在";
         }
-        if (!user.getPassword().equals(MD5Utils.md5(password))) {
+        if (!PasswordUtils.matches(password, user.getPassword())) {
             return "密码错误，注销失败";
         }
         userMapper.updateAdmin(userId, user.getRole(), 0, 3, user.getCreditScore());
@@ -138,7 +144,7 @@ public class UserServiceImpl implements UserService {
         if (newPassword.length() < 6 || newPassword.length() > 20) {
             return "新密码长度需6-20位";
         }
-        userMapper.updatePassword(user.getUserId(), MD5Utils.md5(newPassword));
+        userMapper.updatePassword(user.getUserId(), PasswordUtils.encode(newPassword));
         return null;
     }
 
@@ -170,7 +176,7 @@ public class UserServiceImpl implements UserService {
         }
         User admin = new User();
         admin.setUsername(username);
-        admin.setPassword(MD5Utils.md5(password));
+        admin.setPassword(PasswordUtils.encode(password));
         admin.setNickname(nickname != null ? nickname : username);
         admin.setRealName(realName);
         admin.setRole(3);

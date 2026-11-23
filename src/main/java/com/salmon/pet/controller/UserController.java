@@ -22,14 +22,45 @@ public class UserController {
         return "user/login";
     }
 
+    /** 登录失败锁定参数：连续失败 5 次锁定 15 分钟（按 session 计数） */
+    private static final int LOGIN_MAX_FAIL = 5;
+    private static final long LOGIN_LOCK_MS = 15L * 60 * 1000;
+    private static final String LOGIN_FAIL_COUNT = "loginFailCount";
+    private static final String LOGIN_LOCK_UNTIL = "loginLockUntil";
+
     @PostMapping("/login")
     public String doLogin(String username, String password, HttpSession session, Model model) {
-        User user = userService.login(username, password);
-        if (user == null) {
-            model.addAttribute("error", "账号或密码错误");
+        // 锁定检查：锁定期内直接拒绝，避免暴力破解
+        Long lockUntil = (Long) session.getAttribute(LOGIN_LOCK_UNTIL);
+        if (lockUntil != null && lockUntil > System.currentTimeMillis()) {
+            long minutes = (lockUntil - System.currentTimeMillis()) / 60000 + 1;
+            model.addAttribute("error", "登录失败次数过多，账号已临时锁定，请 " + minutes + " 分钟后再试");
             model.addAttribute("username", username);
             return "user/login";
         }
+        // 锁定已过期，重置计数
+        if (lockUntil != null) {
+            session.removeAttribute(LOGIN_LOCK_UNTIL);
+            session.removeAttribute(LOGIN_FAIL_COUNT);
+        }
+
+        User user = userService.login(username, password);
+        if (user == null) {
+            Integer failCount = (Integer) session.getAttribute(LOGIN_FAIL_COUNT);
+            int count = (failCount == null ? 0 : failCount) + 1;
+            session.setAttribute(LOGIN_FAIL_COUNT, count);
+            if (count >= LOGIN_MAX_FAIL) {
+                session.setAttribute(LOGIN_LOCK_UNTIL, System.currentTimeMillis() + LOGIN_LOCK_MS);
+                model.addAttribute("error", "连续 " + count + " 次登录失败，账号已锁定 15 分钟");
+            } else {
+                model.addAttribute("error", "账号或密码错误（还可尝试 " + (LOGIN_MAX_FAIL - count) + " 次）");
+            }
+            model.addAttribute("username", username);
+            return "user/login";
+        }
+        // 登录成功，清除失败计数
+        session.removeAttribute(LOGIN_FAIL_COUNT);
+        session.removeAttribute(LOGIN_LOCK_UNTIL);
         session.setAttribute("loginUser", user);
         // 管理员跳后台，普通用户跳首页
         if (user.getRole() == 3 || user.getRole() == 9) {

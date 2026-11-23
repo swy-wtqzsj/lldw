@@ -88,6 +88,28 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+    <!-- 友好错误页：避免将异常堆栈 / 框架信息暴露给客户端 -->
+    <error-page>
+        <error-code>400</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error.jsp</location>
+    </error-page>
+
     <!-- Session 超时 30 分钟 -->
     <session-config>
         <session-timeout>30</session-timeout>
