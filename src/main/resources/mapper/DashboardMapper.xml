@@ -18,7 +18,12 @@
             (SELECT COUNT(*) FROM material) AS material_total,
             (SELECT COUNT(*) FROM material WHERE quantity &lt;= warn_threshold) AS material_low,
             (SELECT COUNT(*) FROM lost_pet WHERE status = 1) AS lost_pending,
-            (SELECT COUNT(*) FROM appeal WHERE status = 1) AS appeal_pending
+            (SELECT COUNT(*) FROM appeal WHERE status = 1) AS appeal_pending,
+            (SELECT COUNT(*) FROM volunteer_sign WHERE status != 3) AS sign_total,
+            (SELECT IFNULL(SUM(work_hours), 0) FROM volunteer_sign WHERE audit_status = 2 AND status != 3) AS sign_hours_total,
+            (SELECT COUNT(*) FROM volunteer_sign WHERE sign_date = CURDATE() AND status != 3) AS sign_today,
+            (SELECT COUNT(*) FROM volunteer_sign WHERE audit_status = 1 AND status = 2) AS sign_audit_pending,
+            (SELECT COUNT(*) FROM material_record WHERE usage_desc LIKE '物资捐赠%') AS donate_total
     </select>
 
 </mapper>

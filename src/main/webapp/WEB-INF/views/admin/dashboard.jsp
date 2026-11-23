@@ -162,6 +162,12 @@
     <a class="nav-item" href="${pageContext.request.contextPath}/admin/appeal/list">
         <i class="fa fa-balance-scale"></i> 处罚申诉
     </a>
+    <a class="nav-item" href="${pageContext.request.contextPath}/admin/sign/list">
+        <i class="fa fa-check-circle-o"></i> 志愿签到
+    </a>
+    <a class="nav-item" href="${pageContext.request.contextPath}/admin/sign/stats">
+        <i class="fa fa-bar-chart"></i> 工时统计
+    </a>
     <hr style="border-color: rgba(255,255,255,0.1); margin: 15px;">
     <a class="nav-item" href="${pageContext.request.contextPath}/">
         <i class="fa fa-home"></i> 返回前台
@@ -230,9 +236,12 @@
                 <h5>内容概览</h5>
                 <hr>
                 <p class="text-muted mb-1">志愿活动：${stats.activity_total} 个</p>
-                <p class="text-muted mb-0">知识文章：${stats.knowledge_total} 篇</p>
+                <p class="text-muted mb-1">知识文章：${stats.knowledge_total} 篇</p>
+                <p class="text-muted mb-1">志愿签到：${stats.sign_total} 次（今日 ${stats.sign_today} 次）</p>
+                <p class="text-muted mb-0">累计志愿工时：${stats.sign_hours_total} 小时</p>
                 <hr>
                 <p class="text-muted mb-1">物资种类：${stats.material_total} 种</p>
+                <p class="text-muted mb-1">收到捐赠：${stats.donate_total} 笔</p>
                 <p class="text-muted mb-0">
                     库存预警：
                     <span class="${stats.material_low > 0 ? 'text-danger' : 'text-muted'}">${stats.material_low} 种</span>
@@ -249,7 +258,8 @@
                 <p class="text-muted mb-1">待处理举报：${stats.report_pending} 条</p>
                 <p class="text-muted mb-1">待认证证书：${stats.cert_pending} 条</p>
                 <p class="text-muted mb-1">待审核寻宠：${stats.lost_pending} 条</p>
-                <p class="text-muted mb-0">待复核申诉：${stats.appeal_pending} 条</p>
+                <p class="text-muted mb-1">待复核申诉：${stats.appeal_pending} 条</p>
+                <p class="text-muted mb-0">待审核工时：${stats.sign_audit_pending} 条</p>
             </div>
         </div>
     </div>

@@ -21,11 +21,13 @@
             <li><a href="${pageContext.request.contextPath}/activity/list">志愿活动</a></li>
             <li><a href="${pageContext.request.contextPath}/help/list">求助中心</a></li>
             <li><a href="${pageContext.request.contextPath}/lost/list">寻宠启事</a></li>
+            <li><a href="${pageContext.request.contextPath}/material/list">物资捐赠</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <c:choose>
                 <c:when test="${not empty sessionScope.loginUser}">
                     <li><a href="${pageContext.request.contextPath}/message/list">消息<sup style="color:red;">!</sup></a></li>
+                    <li><a href="${pageContext.request.contextPath}/sign/list">志愿签到</a></li>
                     <li><a href="${pageContext.request.contextPath}/volunteer/apply">志愿认证</a></li>
                     <li><a href="${pageContext.request.contextPath}/report/submit">举报</a></li>
                     <li><a href="${pageContext.request.contextPath}/punishment/my">处罚查询</a></li>

@@ -117,4 +117,69 @@ public class MaterialServiceImpl implements MaterialService {
     public List<MaterialRecord> getRecentRecords(Integer limit) {
         return materialRecordMapper.selectRecent(limit == null || limit <= 0 ? 20 : limit);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String donate(Integer materialId, String name, Integer category, Integer quantity,
+                         String unit, String donor, String operator) {
+        if (quantity == null || quantity <= 0) {
+            return "捐赠数量必须大于 0";
+        }
+        if (donor == null || donor.trim().isEmpty()) {
+            donor = "爱心人士";
+        }
+        if (operator == null || operator.trim().isEmpty()) {
+            operator = donor;
+        }
+
+        if (materialId == null) {
+            if (name == null || name.trim().isEmpty()) {
+                return "请选择已有物资，或填写新物资名称";
+            }
+            Material exist = materialMapper.selectByName(name.trim());
+            if (exist != null) {
+                materialId = exist.getMaterialId();
+            } else {
+                Material m = new Material();
+                m.setName(name.trim());
+                m.setCategory(category == null || category < 1 || category > 3 ? 3 : category);
+                m.setQuantity(quantity);
+                m.setUnit(unit == null || unit.trim().isEmpty() ? "件" : unit.trim());
+                m.setWarnThreshold(5);
+                m.setDonor(donor);
+                if (materialMapper.insert(m) <= 0 || m.getMaterialId() == null) {
+                    return "捐赠失败，请稍后重试";
+                }
+                materialId = m.getMaterialId();
+                insertDonateRecord(materialId, quantity, operator, "物资捐赠(新增)");
+                return null;
+            }
+        } else if (materialMapper.selectById(materialId) == null) {
+            return "所选物资不存在，请刷新页面后重试";
+        }
+
+        materialMapper.increaseStock(materialId, quantity);
+        materialMapper.updateDonor(materialId, donor);
+        insertDonateRecord(materialId, quantity, operator, "物资捐赠");
+        return null;
+    }
+
+    private void insertDonateRecord(Integer materialId, Integer quantity,
+                                    String operator, String usageDesc) {
+        MaterialRecord record = new MaterialRecord();
+        record.setMaterialId(materialId);
+        record.setType(1);
+        record.setQuantity(quantity);
+        record.setUsageDesc(usageDesc);
+        record.setOperator(operator);
+        materialRecordMapper.insert(record);
+    }
+
+    @Override
+    public List<MaterialRecord> getDonationsByOperator(String operator) {
+        if (operator == null || operator.trim().isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        return materialRecordMapper.selectDonationsByOperator(operator, 20);
+    }
 }

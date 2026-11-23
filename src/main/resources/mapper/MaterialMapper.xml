@@ -69,6 +69,15 @@
           AND quantity &gt;= #{quantity}
     </update>
 
+    <select id="selectByName" resultMap="MaterialResultMap">
+        SELECT * FROM material WHERE name = #{name} LIMIT 1
+    </select>
+
+    <update id="updateDonor">
+        UPDATE material SET donor = #{donor}, update_time = NOW()
+        WHERE material_id = #{materialId}
+    </update>
+
     <select id="countLowStock" resultType="int">
         SELECT COUNT(*) FROM material WHERE quantity &lt;= warn_threshold
     </select>

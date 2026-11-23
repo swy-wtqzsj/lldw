@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.salmon.pet.mapper.VolunteerSignMapper">
+
+    <resultMap id="VolunteerSignResultMap" type="com.salmon.pet.entity.VolunteerSign">
+        <id property="signId" column="sign_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="activityId" column="activity_id"/>
+        <result property="signDate" column="sign_date"/>
+        <result property="signInTime" column="sign_in_time"/>
+        <result property="signOutTime" column="sign_out_time"/>
+        <result property="workHours" column="work_hours"/>
+        <result property="serviceType" column="service_type"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="auditStatus" column="audit_status"/>
+        <result property="auditRemark" column="audit_remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+        <result property="activityTitle" column="activity_title"/>
+    </resultMap>
+
+    <sql id="joinUser">
+        SELECT s.*, u.username, u.nickname, a.title AS activity_title
+        FROM volunteer_sign s
+        LEFT JOIN user u ON s.user_id = u.user_id
+        LEFT JOIN activity a ON s.activity_id = a.activity_id
+    </sql>
+
+    <select id="selectByUser" resultMap="VolunteerSignResultMap">
+        <include refid="joinUser"/>
+        WHERE s.user_id = #{userId}
+        ORDER BY s.sign_in_time DESC, s.sign_id DESC
+    </select>
+
+    <select id="selectById" resultMap="VolunteerSignResultMap">
+        <include refid="joinUser"/>
+        WHERE s.sign_id = #{signId}
+    </select>
+
+    <insert id="insert" parameterType="com.salmon.pet.entity.VolunteerSign"
+            useGeneratedKeys="true" keyProperty="signId">
+        INSERT INTO volunteer_sign
+            (user_id, activity_id, sign_date, sign_in_time, work_hours,
+             service_type, content, status, audit_status, create_time)
+        VALUES
+            (#{userId}, #{activityId}, CURDATE(), NOW(), 0,
+             #{serviceType}, #{content}, 1, 1, NOW())
+    </insert>
+
+    <update id="signOut">
+        UPDATE volunteer_sign
+        SET sign_out_time = NOW(),
+            work_hours = #{workHours},
+            status = 2
+        WHERE sign_id = #{signId} AND status = 1
+    </update>
+
+    <select id="countOpenSign" resultType="int">
+        SELECT COUNT(*) FROM volunteer_sign
+        WHERE user_id = #{userId} AND status = 1
+    </select>
+
+    <select id="selectAdminList" resultMap="VolunteerSignResultMap">
+        <include refid="joinUser"/>
+        <where>
+            <if test="userId != null">
+                AND s.user_id = #{userId}
+            </if>
+            <if test="status != null">
+                AND s.status = #{status}
+            </if>
+            <if test="auditStatus != null">
+                AND s.audit_status = #{auditStatus}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (u.username LIKE CONCAT('%', #{keyword}, '%')
+                  OR u.nickname LIKE CONCAT('%', #{keyword}, '%')
+                  OR s.content LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY s.sign_in_time DESC, s.sign_id DESC
+    </select>
+
+    <update id="updateAudit">
+        UPDATE volunteer_sign
+        SET audit_status = #{auditStatus},
+            audit_remark = #{auditRemark}
+        WHERE sign_id = #{signId}
+    </update>
+
+    <select id="selectWorkHourRank" resultType="map">
+        SELECT u.user_id        AS user_id,
+               u.username       AS username,
+               u.nickname       AS nickname,
+               COUNT(*)         AS sign_count,
+               SUM(CASE WHEN s.status = 2 THEN 1 ELSE 0 END) AS finish_count,
+               SUM(CASE WHEN s.audit_status = 2 THEN s.work_hours ELSE 0 END) AS total_hours
+        FROM volunteer_sign s
+        LEFT JOIN user u ON s.user_id = u.user_id
+        WHERE s.status != 3
+        GROUP BY u.user_id, u.username, u.nickname
+        ORDER BY total_hours DESC, sign_count DESC
+    </select>
+
+    <select id="selectSummary" resultType="map">
+        SELECT COUNT(*) AS sign_total,
+               COUNT(DISTINCT user_id) AS volunteer_total,
+               SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS signing_now,
+               SUM(CASE WHEN sign_date = CURDATE() THEN 1 ELSE 0 END) AS sign_today,
+               SUM(CASE WHEN audit_status = 1 AND status = 2 THEN 1 ELSE 0 END) AS audit_pending,
+               SUM(CASE WHEN audit_status = 2 THEN work_hours ELSE 0 END) AS hours_total
+        FROM volunteer_sign
+        WHERE status != 3
+    </select>
+
+    <select id="selectMyStats" resultType="map">
+        SELECT COUNT(*) AS sign_count,
+               SUM(CASE WHEN audit_status = 2 THEN work_hours ELSE 0 END) AS total_hours,
+               SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS signing_now
+        FROM volunteer_sign
+        WHERE user_id = #{userId} AND status != 3
+    </select>
+
+    <select id="countToday" resultType="int">
+        SELECT COUNT(*) FROM volunteer_sign
+        WHERE sign_date = CURDATE() AND status != 3
+    </select>
+
+    <select id="selectUserId" resultType="int">
+        SELECT user_id FROM volunteer_sign WHERE sign_id = #{signId}
+    </select>
+
+    <update id="syncVolunteerWorkHours">
+        UPDATE volunteer
+        SET work_hours = (
+            SELECT IFNULL(SUM(work_hours), 0)
+            FROM volunteer_sign
+            WHERE user_id = #{userId} AND audit_status = 2 AND status = 2
+        )
+        WHERE user_id = #{userId} AND audit_status = 2
+    </update>
+
+</mapper>

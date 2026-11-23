@@ -36,6 +36,17 @@
         VALUES (#{materialId}, #{type}, #{quantity}, #{usageDesc}, #{operator}, NOW())
     </insert>
 
+    <select id="selectDonationsByOperator" resultMap="MaterialRecordResultMap">
+        SELECT r.*, m.name AS material_name
+        FROM material_record r
+        LEFT JOIN material m ON r.material_id = m.material_id
+        WHERE r.operator = #{operator}
+          AND r.type = 1
+          AND r.usage_desc LIKE '物资捐赠%'
+        ORDER BY r.record_time DESC, r.record_id DESC
+        LIMIT #{limit}
+    </select>
+
     <select id="countByMaterial" resultType="int">
         SELECT COUNT(*) FROM material_record WHERE material_id = #{materialId}
     </select>
