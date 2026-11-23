@@ -16,6 +16,7 @@ import java.util.List;
  */
 @Service
 public class MaterialServiceImpl implements MaterialService {
+    private static final int MAX_SINGLE_CHANGE = 1000000;
 
     @Autowired
     private MaterialMapper materialMapper;
@@ -36,9 +37,12 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Material material) {
-        if (material.getQuantity() == null) {
-            material.setQuantity(0);
+        if (!validMaterial(material) || material.getQuantity() == null
+                || material.getQuantity() < 0 || material.getQuantity() > MAX_SINGLE_CHANGE) {
+            return false;
         }
+        material.setName(material.getName().trim());
+        material.setUnit(material.getUnit().trim());
         int rows = materialMapper.insert(material);
         if (rows > 0 && material.getQuantity() > 0) {
             MaterialRecord record = new MaterialRecord();
@@ -47,18 +51,37 @@ public class MaterialServiceImpl implements MaterialService {
             record.setQuantity(material.getQuantity());
             record.setUsageDesc("初始入库");
             record.setOperator("系统");
-            materialRecordMapper.insert(record);
+            saveRecord(record);
         }
         return rows > 0;
     }
 
     @Override
     public boolean update(Material material) {
+        if (!validMaterial(material) || material.getMaterialId() == null) {
+            return false;
+        }
+        material.setName(material.getName().trim());
+        material.setUnit(material.getUnit().trim());
         return materialMapper.update(material) > 0;
+    }
+
+    private boolean validMaterial(Material material) {
+        return material != null
+                && material.getName() != null && !material.getName().trim().isEmpty()
+                && material.getName().trim().length() <= 50
+                && material.getCategory() != null && material.getCategory() >= 1 && material.getCategory() <= 3
+                && material.getUnit() != null && !material.getUnit().trim().isEmpty()
+                && material.getUnit().trim().length() <= 10
+                && material.getWarnThreshold() != null && material.getWarnThreshold() >= 0
+                && (material.getDonor() == null || material.getDonor().length() <= 50);
     }
 
     @Override
     public boolean delete(Integer materialId) {
+        if (materialId == null) {
+            return false;
+        }
         // 有出入库流水的物资不允许删除，避免丢失历史记录
         if (materialRecordMapper.countByMaterial(materialId) > 0) {
             return false;
@@ -69,13 +92,12 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean stockIn(Integer materialId, Integer quantity, String operator) {
-        if (materialId == null || quantity == null || quantity <= 0) {
+        if (materialId == null || quantity == null || quantity <= 0 || quantity > MAX_SINGLE_CHANGE) {
             return false;
         }
-        if (materialMapper.selectById(materialId) == null) {
+        if (materialMapper.increaseStock(materialId, quantity) == 0) {
             return false;
         }
-        materialMapper.increaseStock(materialId, quantity);
 
         MaterialRecord record = new MaterialRecord();
         record.setMaterialId(materialId);
@@ -83,14 +105,17 @@ public class MaterialServiceImpl implements MaterialService {
         record.setQuantity(quantity);
         record.setUsageDesc("入库");
         record.setOperator(operator);
-        materialRecordMapper.insert(record);
+        saveRecord(record);
         return true;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean stockOut(Integer materialId, Integer quantity, String usageDesc, String operator) {
-        if (materialId == null || quantity == null || quantity <= 0) {
+        if (materialId == null || quantity == null || quantity <= 0 || quantity > MAX_SINGLE_CHANGE) {
+            return false;
+        }
+        if (usageDesc == null || usageDesc.trim().isEmpty() || usageDesc.trim().length() > 255) {
             return false;
         }
         // 库存不足时影响行数为 0
@@ -102,9 +127,9 @@ public class MaterialServiceImpl implements MaterialService {
         record.setMaterialId(materialId);
         record.setType(2);
         record.setQuantity(quantity);
-        record.setUsageDesc(usageDesc);
+        record.setUsageDesc(usageDesc.trim());
         record.setOperator(operator);
-        materialRecordMapper.insert(record);
+        saveRecord(record);
         return true;
     }
 
@@ -125,7 +150,7 @@ public class MaterialServiceImpl implements MaterialService {
         if (quantity == null || quantity <= 0) {
             return "捐赠数量必须大于 0";
         }
-        if (quantity > 1000000) {
+        if (quantity > MAX_SINGLE_CHANGE) {
             return "单次捐赠数量过大，请分批提交";
         }
         if (donor == null || donor.trim().isEmpty()) {
@@ -180,7 +205,9 @@ public class MaterialServiceImpl implements MaterialService {
             return "所选物资不存在，请刷新页面后重试";
         }
 
-        materialMapper.increaseStock(materialId, quantity);
+        if (materialMapper.increaseStock(materialId, quantity) == 0) {
+            return "捐赠失败，物资不存在或库存已达上限";
+        }
         materialMapper.updateDonor(materialId, donor);
         insertDonateRecord(materialId, quantity, operator, "物资捐赠");
         return null;
@@ -194,7 +221,13 @@ public class MaterialServiceImpl implements MaterialService {
         record.setQuantity(quantity);
         record.setUsageDesc(usageDesc);
         record.setOperator(operator);
-        materialRecordMapper.insert(record);
+        saveRecord(record);
+    }
+
+    private void saveRecord(MaterialRecord record) {
+        if (materialRecordMapper.insert(record) != 1) {
+            throw new IllegalStateException("库存流水写入失败");
+        }
     }
 
     @Override

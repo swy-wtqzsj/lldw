@@ -23,6 +23,11 @@
 <div class="container mt-4" style="max-width: 640px;">
     <h3>${empty material ? '新增物资' : '编辑物资'}</h3>
 
+    <c:if test="${not empty sessionScope.adminMaterialMsg}">
+        <div class="alert alert-info">${sessionScope.adminMaterialMsg}</div>
+        <c:remove var="adminMaterialMsg" scope="session"/>
+    </c:if>
+
     <form action="${pageContext.request.contextPath}/admin/material/${empty material ? 'save' : 'update'}" method="post">
         <c:if test="${not empty material}">
             <input type="hidden" name="materialId" value="${material.materialId}">
@@ -49,7 +54,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">${empty material ? '初始库存' : '当前库存'}</label>
-                <input type="number" name="quantity" class="form-control" min="0"
+                <input type="number" name="quantity" class="form-control" min="0" max="1000000"
                        value="${empty material ? 0 : material.quantity}" ${empty material ? '' : 'readonly'}>
                 <c:if test="${not empty material}">
                     <div class="form-text">库存数量请通过入库 / 出库操作调整</div>

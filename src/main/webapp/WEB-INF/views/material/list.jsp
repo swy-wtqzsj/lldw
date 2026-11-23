@@ -76,7 +76,7 @@
                         </div>
                         <div class="col-md-1">
                             <label class="form-label">数量</label>
-                            <input type="number" name="quantity" class="form-control" min="1" value="1" required>
+                            <input type="number" name="quantity" class="form-control" min="1" max="1000000" value="1" required>
                         </div>
                         <div class="col-md-1">
                             <label class="form-label">单位</label>
