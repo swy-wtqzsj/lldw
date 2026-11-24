@@ -124,7 +124,7 @@
                                     <input type="hidden" name="type" value="1">
                                     <div class="mb-3">
                                         <label class="form-label">入库数量</label>
-                                        <input type="number" name="quantity" class="form-control" min="1" required>
+                                        <input type="number" name="quantity" class="form-control" min="1" max="1000000" required>
                                         <div class="form-text">当前库存：${item.quantity} ${item.unit}</div>
                                     </div>
                                 </div>
@@ -150,12 +150,12 @@
                                     <input type="hidden" name="type" value="2">
                                     <div class="mb-3">
                                         <label class="form-label">出库数量</label>
-                                        <input type="number" name="quantity" class="form-control" min="1" max="${item.quantity}" required>
+                                        <input type="number" name="quantity" class="form-control" min="1" max="${item.quantity > 1000000 ? 1000000 : item.quantity}" required>
                                         <div class="form-text">当前库存：${item.quantity} ${item.unit}</div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">出库用途</label>
-                                        <input type="text" name="usageDesc" class="form-control" placeholder="如：日常喂养">
+                                        <input type="text" name="usageDesc" class="form-control" maxlength="255" required placeholder="如：日常喂养">
                                     </div>
                                 </div>
                                 <div class="modal-footer">

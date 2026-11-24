@@ -51,7 +51,8 @@
     </update>
 
     <delete id="delete">
-        DELETE FROM material WHERE material_id = #{materialId}
+        DELETE FROM material WHERE material_id = #{materialId} AND quantity = 0
+          AND NOT EXISTS (SELECT 1 FROM material_record WHERE material_id = #{materialId})
     </delete>
 
     <update id="increaseStock">
@@ -59,6 +60,7 @@
         SET quantity = quantity + #{quantity},
             update_time = NOW()
         WHERE material_id = #{materialId}
+          AND quantity &lt;= 2147483647 - #{quantity}
     </update>
 
     <update id="decreaseStock">

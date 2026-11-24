@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -53,13 +54,12 @@ public class AdminMaterialController {
     /**
      * 保存物资
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     public String save(Material material, HttpSession session) {
-        if (material.getName() == null || material.getName().trim().isEmpty()) {
-            session.setAttribute("adminMaterialMsg", "物资名称不能为空");
+        if (!materialService.add(material)) {
+            session.setAttribute("adminMaterialMsg", "新增失败，请检查名称、类别、单位、数量和预警阈值");
             return "redirect:/admin/material/add";
         }
-        materialService.add(material);
         session.setAttribute("adminMaterialMsg", "物资「" + material.getName() + "」已新增");
         return "redirect:/admin/material/list";
     }
@@ -69,27 +69,31 @@ public class AdminMaterialController {
      */
     @RequestMapping("/edit")
     public String edit(@RequestParam Integer materialId, Model model) {
-        model.addAttribute("material", materialService.getById(materialId));
+        Material material = materialService.getById(materialId);
+        if (material == null) {
+            return "redirect:/admin/material/list";
+        }
+        model.addAttribute("material", material);
         return "admin/material_form";
     }
 
     /**
      * 更新物资
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     public String update(Material material, HttpSession session) {
-        materialService.update(material);
-        session.setAttribute("adminMaterialMsg", "物资信息已更新");
+        session.setAttribute("adminMaterialMsg", materialService.update(material)
+                ? "物资信息已更新" : "更新失败，请检查填写内容或确认物资仍存在");
         return "redirect:/admin/material/list";
     }
 
     /**
      * 删除物资
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam Integer materialId, HttpSession session) {
         if (!materialService.delete(materialId)) {
-            session.setAttribute("adminMaterialMsg", "该物资存在出入库流水，不能删除");
+            session.setAttribute("adminMaterialMsg", "删除失败：物资不存在，或仍有库存、出入库流水");
         } else {
             session.setAttribute("adminMaterialMsg", "物资已删除");
         }
@@ -99,7 +103,7 @@ public class AdminMaterialController {
     /**
      * 出入库操作
      */
-    @RequestMapping("/stock")
+    @PostMapping("/stock")
     public String stock(@RequestParam Integer materialId,
                         @RequestParam Integer type,
                         @RequestParam Integer quantity,
@@ -112,14 +116,16 @@ public class AdminMaterialController {
             if (materialService.stockIn(materialId, quantity, operator)) {
                 session.setAttribute("adminMaterialMsg", "入库成功");
             } else {
-                session.setAttribute("adminMaterialMsg", "入库失败，请检查数量");
+                session.setAttribute("adminMaterialMsg", "入库失败：物资不存在、数量不合法或库存已达上限");
             }
-        } else {
+        } else if (type != null && type == 2) {
             if (materialService.stockOut(materialId, quantity, usageDesc, operator)) {
                 session.setAttribute("adminMaterialMsg", "出库成功");
             } else {
-                session.setAttribute("adminMaterialMsg", "出库失败，库存不足或数量不合法");
+                session.setAttribute("adminMaterialMsg", "出库失败：库存不足、数量不合法或用途未填写");
             }
+        } else {
+            session.setAttribute("adminMaterialMsg", "操作类型不合法");
         }
         return "redirect:/admin/material/list";
     }

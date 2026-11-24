@@ -65,6 +65,9 @@ CREATE DATABASE pet_adoption CHARACTER SET utf8mb4;
 
 ### 3. 项目部署
 ```bash
+# 先运行库存逻辑的回归测试
+mvn test
+
 # 标准构建（Maven）
 mvn clean package
 
@@ -76,6 +79,9 @@ LIB_DIR=/path/to/WEB-INF/lib ./build-local.sh
 
 > 本机无 MySQL / Tomcat 时，可只做编译自检：`build-local.sh` 会输出 class 数与 war 产物。
 > 已验证：120 个 Java 全部编译通过（0 错误），字节码 major 52（Java 8）。
+
+物资库存由入库、出库或捐赠操作调整，并同步记录流水；单次操作最多 100 万件。
+出库必须填写用途。有库存或历史流水的物资不能删除，以免丢失库存或审计记录。
 
 ### 4. 访问
 - 前台：http://localhost:8080/pet-adoption/
